@@ -1,0 +1,40 @@
+{
+  "name": "raycast",
+  "version": "1.0.0",
+  "description": "Raycast engine",
+  "main": "index.html",
+  "license": "MIT",
+  "readme": "README.md",
+  "scripts": {
+    "test": "karma start",
+    "start": "webpack --config webpack.config.js && serve ./docs"
+  },
+  "author": "Bartłomiej Wilk",
+  "dependencies": {
+    "lodash": "^4.17.2"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-stats": "^0.3.0",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.26.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "karma": "^1.3.0",
+    "karma-chai": "^0.1.0",
+    "karma-mocha": "^1.3.0",
+    "karma-phantomjs-launcher": "^1.0.2",
+    "karma-sinon": "^1.0.5",
+    "karma-typescript-preprocessor2": "^1.2.1",
+    "karma-webpack": "^1.8.0",
+    "mocha": "^3.2.0",
+    "node-sass": "^4.1.0",
+    "phantomjs-prebuilt": "^2.1.14",
+    "sass-loader": "^4.1.0",
+    "serve": "^2.0.0",
+    "sinon": "^1.17.6",
+    "style-loader": "^0.13.1",
+    "ts-loader": "^1.3.3",
+    "uglify-loader": "^1.4.0",
+    "webpack": "^1.14.0"
+  }
+}

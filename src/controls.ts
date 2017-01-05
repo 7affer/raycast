@@ -7,19 +7,6 @@ export class Controls {
     public strafeleft: boolean = false
     public straferight: boolean = false
 
-    public mousemove(e:MouseEvent) {
-        this.rotateleft = false
-        this.rotateright = false
-        if(e.movementX < 0) {
-            this.rotateleft = true
-            this.rotateright = false
-        } else if(e.movementX > 0) {
-            this.rotateleft = false
-            this.rotateright = true
-        }
-        console.log(e.movementX)
-    }
-
     public keydown(e: KeyboardEvent) {
         if (e.keyCode == 37) this.rotateleft = true
         if (e.keyCode == 68) this.strafeleft = true

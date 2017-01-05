@@ -28,22 +28,7 @@ function initctx(canvas: HTMLCanvasElement) {
     canvas.height = HEIGHT
     document.addEventListener('keydown', (e) => controls.keydown(e), false)
     document.addEventListener('keyup', (e) => controls.keyup(e), false)
-
-    // canvas.addEventListener('click', (e) => {
-    //     canvas.requestPointerLock = canvas.requestPointerLock
-    //     canvas.requestPointerLock()
-    // }, false)
-
-    // document.addEventListener('pointerlockchange', lockChangeAlert, false);
 }
-
-// function lockChangeAlert() {
-//     if (document.pointerLockElement === canvaselement) {
-//         document.addEventListener("mousemove", (e) => controls.mousemove(e), false);
-//     } else {
-//        document.removeEventListener("mousemove", null, false);
-//     }
-// }
 
 let lastRender = Date.now();
 

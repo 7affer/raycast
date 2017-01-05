@@ -1,3 +1,5 @@
+import { PI0_5 } from './mathconst';
+import { Map } from './map';
 import { Controls } from './controls';
 import { IPoint } from './ipoint';
 import { Angle } from './angle';
@@ -22,31 +24,61 @@ export class Player {
     }
 
     public rotateleft(delta: number) {
-        this.facing = new Angle(this.facing.angle + Math.PI / delta)
+        this.facing = new Angle(this.facing.angle + Math.PI * delta / 1000)
     }
 
     public rotateright(delta: number) {
-        this.facing = new Angle(this.facing.angle - Math.PI / delta)
+        this.facing = new Angle(this.facing.angle - Math.PI * delta / 1000)
     }
 
-    public moveforward(delta: number) {
-        this.position = {
-            x: this.position.x + this.facing.cos / delta,
-            y: this.position.y + this.facing.sin / delta
+    public moveforward(delta: number, map: Map, run: boolean) {
+        let position = {
+            x: this.position.x + this.facing.cos * delta / (run ? 250 : 500),
+            y: this.position.y + this.facing.sin * delta / (run ? 250 : 500)
+        }
+        if (map.getvalue(Math.floor(position.x), Math.floor(position.y)) == 0) {
+            this.position = position
         }
     }
 
-    public movebackward(delta: number) {
-        this.position = {
-            x: this.position.x - this.facing.cos / delta,
-            y: this.position.y - this.facing.sin / delta
+    public movebackward(delta: number, map: Map) {
+        let position = {
+            x: this.position.x - this.facing.cos * delta / 500,
+            y: this.position.y - this.facing.sin * delta / 500
+        }
+        if (map.getvalue(Math.floor(position.x), Math.floor(position.y)) == 0) {
+            this.position = position
         }
     }
 
-    public getcontrols(controls: Controls, delta: number) {
-        if (controls.forward) this.moveforward(delta)
-        if (controls.backward) this.movebackward(delta)
+    public strafeleft(delta: number, map: Map, run: boolean) {
+        let newfacing = new Angle(this.facing.angle - PI0_5)
+        let position = {
+            x: this.position.x + newfacing.cos * delta / (run ? 250 : 500),
+            y: this.position.y + newfacing.sin * delta / (run ? 250 : 500)
+        }
+        if (map.getvalue(Math.floor(position.x), Math.floor(position.y)) == 0) {
+            this.position = position
+        }
+    }
+
+    public straferight(delta: number, map: Map, run: boolean) {
+        let newfacing = new Angle(this.facing.angle + PI0_5)
+        let position = {
+            x: this.position.x + newfacing.cos * delta / (run ? 250 : 500),
+            y: this.position.y + newfacing.sin * delta / (run ? 250 : 500)
+        }
+        if (map.getvalue(Math.floor(position.x), Math.floor(position.y)) == 0) {
+            this.position = position
+        }
+    }
+
+    public getcontrols(controls: Controls, map: Map, delta: number) {
+        if (controls.forward) this.moveforward(delta, map, controls.run)
+        if (controls.backward) this.movebackward(delta, map)
         if (controls.rotateleft) this.rotateleft(delta)
         if (controls.rotateright) this.rotateright(delta)
+        if (controls.strafeleft) this.strafeleft(delta, map, controls.run)
+        if (controls.straferight) this.straferight(delta, map, controls.run)
     }
 }

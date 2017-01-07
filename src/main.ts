@@ -6,8 +6,8 @@ import { PI2_0 } from './mathconst'
 import { Map } from './map';
 import { Player } from './player';
 
-const WIDTH = 800
-const HEIGHT = 600
+let WIDTH = 800
+let HEIGHT = 600
 const HEIGHT2 = Math.floor(HEIGHT / 2)
 const WALLHEIGHT = HEIGHT * 0.8
 const FOV = 70
@@ -20,13 +20,15 @@ let map = new Map(100)
 map.randomize(0.3)
 
 let playerposition = { x: map.size / 2 + 0.25, y: map.size / 2 + 0.25 }
-while(map.getvalue(Math.floor(playerposition.x), Math.floor(playerposition.y)) > 0) playerposition.x += 1
+while (map.getvalue(Math.floor(playerposition.x), Math.floor(playerposition.y)) > 0) playerposition.x += 1
 let player = new Player(playerposition, new Angle(0), FOV * Math.PI / 180)
 let controls = new Controls()
 
 function initctx(canvas: HTMLCanvasElement) {
     canvas.width = WIDTH
     canvas.height = HEIGHT
+    canvas.style.width = `${WIDTH}px`
+    canvas.style.height = `${HEIGHT}px`
     document.addEventListener('keydown', (e) => controls.keydown(e), false)
     document.addEventListener('keyup', (e) => controls.keyup(e), false)
     canvas.addEventListener('click', (e) => {

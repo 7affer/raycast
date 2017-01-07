@@ -11,6 +11,7 @@ const HEIGHT = 600
 const HEIGHT2 = Math.floor(HEIGHT / 2)
 const WALLHEIGHT = HEIGHT * 0.8
 const FOV = 70
+const DRAWINGDISTANCE = 30
 
 let canvaselement = <HTMLCanvasElement>document.getElementById('gamecanvas')
 let fps = <HTMLSpanElement>document.getElementById('fps')
@@ -62,7 +63,7 @@ function render() {
 
     var rays = player.getrays(WIDTH)
     for (let r = 0; r < rays.length; r++) {
-        let colisions = Ray.cast(map, player.position, null, null, rays[r], 20)
+        let colisions = Ray.cast(map, player.position, null, null, rays[r], DRAWINGDISTANCE)
         for (let c = 0; c < colisions.length; c++) {
             if (colisions[c].type > 0) {
                 let distance = DistanceCalc.getdistance(player.position, colisions[c].point)

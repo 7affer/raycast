@@ -54,6 +54,12 @@ export class Player {
         }
         if (map.getvalue(Math.floor(position.x), Math.floor(position.y)) == 0) {
             this.position = position
+        } else if (map.getvalue(Math.floor(position.x), Math.floor(this.position.y)) == 0) {
+            position.y = this.position.y
+            this.position = position
+        } else if (map.getvalue(Math.floor(this.position.x), Math.floor(position.y)) == 0) {
+            position.x = this.position.x
+            this.position = position
         }
     }
 

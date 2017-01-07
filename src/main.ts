@@ -6,22 +6,22 @@ import { PI2_0 } from './mathconst'
 import { Map } from './map';
 import { Player } from './player';
 
-const canvaselement = <HTMLCanvasElement>document.getElementById('gamecanvas')
-const fps = <HTMLSpanElement>document.getElementById('fps')
-const ctx = canvaselement.getContext('2d')
 const WIDTH = 800
 const HEIGHT = 600
 const HEIGHT2 = Math.floor(HEIGHT / 2)
 const WALLHEIGHT = HEIGHT * 0.8
 const FOV = 70
 
-const map = new Map(100)
-const player = new Player(
-    { x: map.size / 2, y: map.size / 2 },
-    new Angle(0),
-    FOV * Math.PI / 180
-)
-const controls = new Controls()
+let canvaselement = <HTMLCanvasElement>document.getElementById('gamecanvas')
+let fps = <HTMLSpanElement>document.getElementById('fps')
+let ctx = canvaselement.getContext('2d')
+let map = new Map(100)
+map.randomize(0.3)
+
+let playerposition = { x: map.size / 2 + 0.25, y: map.size / 2 + 0.25 }
+while(map.getvalue(Math.floor(playerposition.x), Math.floor(playerposition.y)) > 0) playerposition.x += 1
+let player = new Player(playerposition, new Angle(0), FOV * Math.PI / 180)
+let controls = new Controls()
 
 function initctx(canvas: HTMLCanvasElement) {
     canvas.width = WIDTH
@@ -85,6 +85,6 @@ function render() {
     requestAnimationFrame(render)
 }
 
-map.randomize(0.3)
+
 initctx(canvaselement)
 render()

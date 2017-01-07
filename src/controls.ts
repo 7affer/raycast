@@ -6,18 +6,22 @@ export class Controls {
     public run: boolean = false
     public strafeleft: boolean = false
     public straferight: boolean = false
+    public mouserotateleft: boolean = false
+    public mouserotateright: boolean = false
 
     public mousemove(e:MouseEvent) {
-        this.rotateleft = false
-        this.rotateright = false
         if(e.movementX < 0) {
-            this.rotateleft = true
-            this.rotateright = false
+            this.mouserotateleft = true
+            this.mouserotateright = false
         } else if(e.movementX > 0) {
-            this.rotateleft = false
-            this.rotateright = true
+            this.mouserotateleft = false
+            this.mouserotateright = true
         }
-        console.log(e.movementX)
+    }
+
+    public resetmouserotate() {
+        this.mouserotateleft = false
+        this.mouserotateright = false
     }
 
     public keydown(e: KeyboardEvent) {

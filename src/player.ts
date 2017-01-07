@@ -24,11 +24,11 @@ export class Player {
     }
 
     public rotateleft(delta: number) {
-        this.facing = new Angle(this.facing.angle + Math.PI * delta / 1000)
+        this.facing = new Angle(this.facing.angle + Math.PI * delta / 1200)
     }
 
     public rotateright(delta: number) {
-        this.facing = new Angle(this.facing.angle - Math.PI * delta / 1000)
+        this.facing = new Angle(this.facing.angle - Math.PI * delta / 1200)
     }
 
     public moveforward(delta: number, map: Map, run: boolean) {
@@ -76,9 +76,10 @@ export class Player {
     public getcontrols(controls: Controls, map: Map, delta: number) {
         if (controls.forward) this.moveforward(delta, map, controls.run)
         if (controls.backward) this.movebackward(delta, map)
-        if (controls.rotateleft) this.rotateleft(delta)
-        if (controls.rotateright) this.rotateright(delta)
+        if (controls.rotateleft || controls.mouserotateleft) this.rotateleft(delta)
+        if (controls.rotateright || controls.mouserotateright) this.rotateright(delta)
         if (controls.strafeleft) this.strafeleft(delta, map, controls.run)
         if (controls.straferight) this.straferight(delta, map, controls.run)
+        controls.resetmouserotate()
     }
 }

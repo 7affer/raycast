@@ -29,21 +29,22 @@ function initctx(canvas: HTMLCanvasElement) {
     document.addEventListener('keydown', (e) => controls.keydown(e), false)
     document.addEventListener('keyup', (e) => controls.keyup(e), false)
 
-    // canvas.addEventListener('click', (e) => {
-    //     canvas.requestPointerLock = canvas.requestPointerLock
-    //     canvas.requestPointerLock()
-    // }, false)
+    canvas.addEventListener('click', (e) => {
+        canvas.requestPointerLock = canvas.requestPointerLock
+        canvas.requestPointerLock()
+    }, false)
 
-    // document.addEventListener('pointerlockchange', lockChangeAlert, false);
+    document.addEventListener('pointerlockchange', lockChangeAlert, false);
 }
 
-// function lockChangeAlert() {
-//     if (document.pointerLockElement === canvaselement) {
-//         document.addEventListener("mousemove", (e) => controls.mousemove(e), false);
-//     } else {
-//        document.removeEventListener("mousemove", null, false);
-//     }
-// }
+let mousemovefunction = (e: MouseEvent) => controls.mousemove(e)
+function lockChangeAlert() {
+    if (document.pointerLockElement === canvaselement) {
+        document.addEventListener("mousemove", mousemovefunction, false);
+    } else {
+        document.removeEventListener("mousemove", mousemovefunction, false);
+    }
+}
 
 let lastRender = Date.now();
 

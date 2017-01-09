@@ -9,11 +9,11 @@ export class Controls {
     public mouserotateleft: boolean = false
     public mouserotateright: boolean = false
 
-    public mousemove(e:MouseEvent) {
-        if(e.movementX < 0) {
+    public mousemove(e: MouseEvent) {
+        if (e.movementX < 0) {
             this.mouserotateleft = true
             this.mouserotateright = false
-        } else if(e.movementX > 0) {
+        } else if (e.movementX > 0) {
             this.mouserotateleft = false
             this.mouserotateright = true
         }
@@ -42,5 +42,25 @@ export class Controls {
         if (e.keyCode == 38 || e.keyCode == 87) this.forward = false
         if (e.keyCode == 40 || e.keyCode == 83) this.backward = false
         this.run = e.shiftKey
+    }
+
+    public bindevents(doc: HTMLDocument, canvas: HTMLElement) {
+        doc.addEventListener('keydown', (e) => this.keydown(e), false)
+        doc.addEventListener('keyup', (e) => this.keyup(e), false)
+        doc.addEventListener('pointerlockchange', (e) => { this.lockChangeAlert(doc, canvas) }, false)
+        canvas.addEventListener('click', (e) => {
+            canvas.requestPointerLock = canvas.requestPointerLock
+            canvas.requestPointerLock()
+        }, false)
+    }
+
+    private mousemovefunction = (e: MouseEvent) => this.mousemove(e)
+    private lockChangeAlert(doc: HTMLDocument, canvas: HTMLElement) {
+        let canvaselement = <HTMLCanvasElement>document.getElementById('gamecanvas')
+        if (doc.pointerLockElement === canvaselement) {
+            doc.addEventListener("mousemove", this.mousemovefunction, false)
+        } else {
+            doc.removeEventListener("mousemove", this.mousemovefunction, false)
+        }
     }
 }

@@ -8,7 +8,7 @@ import { Map } from './map';
 export class Ray {
 
     public static nearesty(origin: IPoint, facing: Angle): IManhattanDist {
-        let nexty = Math.floor(origin.y) + facing.dy
+        let nexty = Math.floor(origin.y+ facing.dy) 
         if (nexty == origin.y) nexty -= 1
         let dy = nexty - origin.y
         let dx = facing.ctg * dy
@@ -20,7 +20,7 @@ export class Ray {
     }
 
     public static nearestx(origin: IPoint, facing: Angle): IManhattanDist {
-        let nextx = Math.floor(origin.x) + facing.dx
+        let nextx = Math.floor(origin.x+ facing.dx) 
         if (nextx == origin.x) nextx -= 1
         let dx = nextx - origin.x
         let dy = facing.tg * dx

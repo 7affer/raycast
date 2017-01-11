@@ -66,7 +66,5 @@ export class Scene {
                 }
             }
         }
-
-        requestAnimationFrame(() => this.render())
     }
 }

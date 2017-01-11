@@ -1,4 +1,4 @@
-import { Angle } from '../src/angle';
+import { Angle } from '../src/scripts/angle';
 import { expect } from 'chai';
 
 describe('Angle', () => {

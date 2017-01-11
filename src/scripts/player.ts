@@ -85,6 +85,12 @@ export class Player {
         }
     }
 
+    public initonmap(map: Map) {
+        while (map.getvalue(Math.floor(this.position.x), Math.floor(this.position.y)) > 0) {
+            this.position.x += 1
+        }
+    }
+
     public getcontrols(controls: Controls, map: Map, delta: number) {
         if (controls.forward) this.moveforward(delta, map, controls.run)
         if (controls.backward) this.movebackward(delta, map)

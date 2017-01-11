@@ -1,4 +1,4 @@
-import { DistanceCalc } from '../src/distancecalc';
+import { DistanceCalc } from '../src/scripts/distancecalc';
 import { expect } from 'chai';
 
 describe('DistanceCalc', () => {

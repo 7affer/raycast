@@ -2,11 +2,11 @@ export class AssetLoader {
 
     constructor() {
         this.wallssrcs = [
-            '/assets/wall1.jpg',
-            '/assets/wall2.jpg',
-            '/assets/wall3.jpg',
-            '/assets/wall4.jpg',
-            '/assets/wall5.jpg'
+            './assets/wall1.jpg',
+            './assets/wall2.jpg',
+            './assets/wall3.jpg',
+            './assets/wall4.jpg',
+            './assets/wall5.jpg'
         ]
 
         this.walls = [

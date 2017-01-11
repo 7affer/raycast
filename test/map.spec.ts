@@ -40,7 +40,7 @@ describe('Map', () => {
       map.randomize(1)
       let sum = 0
       for (let i = 0; i < map.map.length; i++) sum += map.map[i]
-      expect(sum).to.be.equal(10000)
+      expect(sum).to.be.greaterThan(9999)
     })
   })
 })

@@ -1,10 +1,11 @@
-import { ISceneEvents } from './isceneevents';
-import { ISettings } from './isettings';
-import { Map } from './map';
-import { Player } from './player';
-import { Controls } from './controls';
-import { Ray } from './ray';
-import { DistanceCalc } from './distancecalc';
+import {AssetLoader} from './assetloader';
+import {ISceneEvents} from './isceneevents';
+import {ISettings} from './isettings';
+import {Map} from './map';
+import {Player} from './player';
+import {Controls} from './controls';
+import {Ray} from './ray';
+import {DistanceCalc} from './distancecalc';
 
 export class Scene {
 
@@ -18,7 +19,8 @@ export class Scene {
         private player: Player,
         private controls: Controls,
         private settings: ISettings,
-        private events: ISceneEvents
+        private events: ISceneEvents,
+        private assets: AssetLoader
     ) {
         this.lastrender = Date.now()
         this.height2 = Math.floor(settings.height / 2)
@@ -32,26 +34,32 @@ export class Scene {
         this.ctx.fillRect(0, this.height2, this.settings.width, this.height2)
     }
 
-    private renderwall(row: number, distancecorrected: number) {
+    private renderwall(
+        row: number, 
+        distancecorrected: number, 
+        image: HTMLImageElement, 
+        textureposition: number
+    ) {
         let height = Math.ceil(this.wallheight / distancecorrected)
-        let color = Math.floor(255 - distancecorrected * 10)
-        let colorhex = color.toString(16).toLowerCase()
         let top = Math.floor(this.height2 - height / 2)
+        let texleft = Math.floor(textureposition * image.width)
+        this.ctx.drawImage(image, texleft, 0, 1, image.height, row, top, 1, height)
         this.ctx.beginPath()
         this.ctx.moveTo(row, top)
         this.ctx.lineTo(row, this.settings.height - top)
         this.ctx.lineWidth = 2
-        this.ctx.strokeStyle = `#${colorhex}${colorhex}${colorhex}`
+        this.ctx.strokeStyle = '#000000'
+        this.ctx.globalAlpha = distancecorrected / this.settings.drawingdistance
         this.ctx.stroke()
+        this.ctx.globalAlpha = 1
     }
 
-    public render() {
+    public renderframe() {
         let now = Date.now()
         let delta = now - this.lastrender
         this.lastrender = now
         this.events.renderfps(Math.floor(1000 / delta))
         this.renderbackground()
-
         this.player.getcontrols(this.controls, this.map, delta)
 
         var rays = this.player.getrays(this.settings.width)
@@ -59,9 +67,12 @@ export class Scene {
             let colisions = Ray.cast(this.map, this.player.position, null, null, rays[r], this.settings.drawingdistance)
             for (let c = 0; c < colisions.length; c++) {
                 if (colisions[c].type > 0) {
+                    let modx = colisions[c].point.x - Math.floor(colisions[c].point.x) 
+                    let mody = colisions[c].point.y - Math.floor(colisions[c].point.y)
+                    let textureposition = Math.abs(modx > mody ? modx : mody)
                     let distance = DistanceCalc.getdistance(this.player.position, colisions[c].point)
                     let distancecorrected = distance * Math.cos(this.player.facing.angle - rays[r].angle)
-                    this.renderwall(r, distancecorrected)
+                    this.renderwall(r, distancecorrected, this.assets.walls[colisions[c].type - 1], textureposition)
                     break
                 }
             }

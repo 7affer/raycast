@@ -34,6 +34,25 @@ export class Controls {
         this.run = e.shiftKey
     }
 
+    public touchstart(e: TouchEvent) {
+        var t = e.touches[0];
+        this.touchend(e);
+        if (t.pageX < window.innerWidth * 0.333) this.rotateleft = true
+        else if (t.pageX < window.innerWidth * 0.666) this.forward = true
+        else this.rotateright = true
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    public touchend(e: TouchEvent) {
+        var t = e.touches[0];
+        this.rotateleft = false
+        this.rotateright = false
+        this.forward = false
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
     public keyup(e: KeyboardEvent) {
         if (e.keyCode == 37) this.rotateleft = false
         if (e.keyCode == 68) this.strafeleft = false
@@ -48,6 +67,8 @@ export class Controls {
         doc.addEventListener('keydown', (e) => this.keydown(e), false)
         doc.addEventListener('keyup', (e) => this.keyup(e), false)
         doc.addEventListener('pointerlockchange', (e) => { this.lockChangeAlert(doc, canvas) }, false)
+        doc.addEventListener('touchstart', (e) => { this.touchstart(e) }, false)
+        doc.addEventListener('touchend', (e) => { this.touchend(e) }, false)
         canvas.addEventListener('click', (e) => {
             canvas.requestPointerLock = canvas.requestPointerLock
             canvas.requestPointerLock()

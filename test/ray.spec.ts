@@ -1,14 +1,14 @@
-import { Colision } from '../src/colision';
-import { Map } from '../src/map';
-import { Angle } from '../src/angle';
-import { Ray } from '../src/ray';
+import { Colision } from '../src/scripts/colision';
+import { Map } from '../src/scripts/map';
+import { Angle } from '../src/scripts/angle';
+import { Ray } from '../src/scripts/ray';
 import { expect } from 'chai';
 
 describe('Ray', () => {
 
   describe('cast()', () => {
     it('should return array of colisions', () => {
-      let map = new Map(2)
+      let map = new Map(2, 0)
       let c1 = Ray.cast(map, { x: 0, y: 0 }, null, null, new Angle(0), 5)
       expect(c1).to.have.property('length', 5)
       let c2 = Ray.cast(map, { x: 0, y: 0 }, null, null, new Angle(Math.PI / 4 - 0.0001), 5)
@@ -16,14 +16,13 @@ describe('Ray', () => {
     })
 
     it('should return nearest first', () => {
-      let map = new Map(100)
-      map.randomize(1)
+      let map = new Map(100, 1)
       let c1 = Ray.cast(map, { x: 0, y: 1 }, null, null, new Angle(0), 100)
       expect(c1[0].point.x).to.be.below(c1[c1.length - 1].point.x)
     })
 
     it('should get proper cell in map', () => {
-      let map = new Map(5)
+      let map = new Map(5, 0)
       map.setvalue(3, 2, 1)
       map.setvalue(1, 2, 1)
       map.setvalue(2, 1, 1)

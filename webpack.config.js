@@ -5,7 +5,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
 	entry: {
 		app: [
-			'./src/main.ts',
+			'./src/scripts/main.ts',
 			'./src/styles.scss'
 		]
 	},

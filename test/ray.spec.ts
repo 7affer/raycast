@@ -16,9 +16,10 @@ describe('Ray', () => {
     })
 
     it('should return nearest first', () => {
-      let map = new Map(100, 1)
-      let c1 = Ray.cast(map, { x: 0, y: 1 }, null, null, new Angle(0), 100)
-      expect(c1[0].point.x).to.be.below(c1[c1.length - 1].point.x)
+      let map = new Map(100, 0)
+      map.setvalue(0,50, 1)
+      let c1 = Ray.cast(map, { x: 0.5, y: 0.5 }, null, null, new Angle(0), 100)
+      expect(c1[0].point.x).to.be.lessThan(c1[c1.length - 1].point.x)
     })
 
     it('should get proper cell in map', () => {

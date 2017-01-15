@@ -8,7 +8,7 @@ import { Map } from './map';
 export class Ray {
 
     public static nearesty(origin: IPoint, facing: Angle): IManhattanDist {
-        let nexty = Math.floor(origin.y+ facing.dy) 
+        let nexty = Math.floor(origin.y + facing.dy)
         if (nexty == origin.y) nexty -= 1
         let dy = nexty - origin.y
         let dx = facing.ctg * dy
@@ -20,7 +20,7 @@ export class Ray {
     }
 
     public static nearestx(origin: IPoint, facing: Angle): IManhattanDist {
-        let nextx = Math.floor(origin.x+ facing.dx) 
+        let nextx = Math.floor(origin.x + facing.dx)
         if (nextx == origin.x) nextx -= 1
         let dx = nextx - origin.x
         let dy = facing.tg * dx
@@ -47,13 +47,22 @@ export class Ray {
 
         if (h.manhattandistance < v.manhattandistance) {
             v.manhattandistance -= h.manhattandistance
-
-            return [new Colision(h, map.getvalue(Math.floor(h.x), h.y - (facing.dy > 0 ? 0 : 1)))]
-                .concat(Ray.cast(map, h, null, v, facing, maxdistance - h.manhattandistance))
+            let type = map.getvalue(Math.floor(h.x), h.y - (facing.dy > 0 ? 0 : 1))
+            if (type > 0) {
+                return [new Colision(h, type)]
+            } else {
+                return [new Colision(h, type)]
+                    .concat(Ray.cast(map, h, null, v, facing, maxdistance - h.manhattandistance))
+            }
         } else {
             h.manhattandistance -= v.manhattandistance
-            return [new Colision(v, map.getvalue(v.x - (facing.dx > 0 ? 0 : 1), Math.floor(v.y)))]
-                .concat(Ray.cast(map, v, h, null, facing, maxdistance - v.manhattandistance))
+            let type = map.getvalue(v.x - (facing.dx > 0 ? 0 : 1), Math.floor(v.y))
+            if (type > 0) {
+                return [new Colision(v, type)]
+            } else {
+                return [new Colision(v, type)]
+                    .concat(Ray.cast(map, v, h, null, facing, maxdistance - v.manhattandistance))
+            }
         }
     }
 }

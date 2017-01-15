@@ -45,7 +45,6 @@ export class Controls {
     }
 
     public touchend(e: TouchEvent) {
-        var t = e.touches[0];
         this.rotateleft = false
         this.rotateright = false
         this.forward = false

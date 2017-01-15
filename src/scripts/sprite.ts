@@ -1,9 +1,8 @@
 import { Angle } from './angle';
 import { IPoint } from './ipoint';
-export class Body {
+export class Sprite {
     constructor(
         public position: IPoint,
-        public facing: Angle,
         public type: number
     ) {
     }

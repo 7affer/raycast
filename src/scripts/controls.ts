@@ -66,8 +66,8 @@ export class Controls {
         doc.addEventListener('keydown', (e) => this.keydown(e), false)
         doc.addEventListener('keyup', (e) => this.keyup(e), false)
         doc.addEventListener('pointerlockchange', (e) => { this.lockChangeAlert(doc, canvas) }, false)
-        doc.addEventListener('touchstart', (e) => { this.touchstart(e) }, false)
-        doc.addEventListener('touchend', (e) => { this.touchend(e) }, false)
+        canvas.addEventListener('touchstart', (e) => { this.touchstart(e) }, false)
+        canvas.addEventListener('touchend', (e) => { this.touchend(e) }, false)
         canvas.addEventListener('click', (e) => {
             canvas.requestPointerLock = canvas.requestPointerLock
             canvas.requestPointerLock()

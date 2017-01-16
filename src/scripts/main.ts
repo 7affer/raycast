@@ -25,6 +25,12 @@ let player = new Player({ x: map.size / 2 + 0.25, y: map.size / 2 + 0.25 }, new 
 let controls = new Controls()
 let assetloader = new AssetLoader()
 let scene = new Scene(ctx, gamesettins, assetloader)
+let sprites = new Array<Sprite>()
+for (let i = 0; i < 50; i++) {
+    sprites.push(
+        new Sprite({ x: Math.random() * 100, y: Math.random() * 100 }, 0)
+    )
+}
 
 canvas.width = gamesettins.width
 canvas.height = gamesettins.height
@@ -33,14 +39,29 @@ canvas.style.height = `${gamesettins.height}px`
 controls.bindevents(document, canvas)
 player.initonmap(map)
 
+let objectsinrange = new Array<Sprite>()
 let lastrender: number = Date.now()
 function render() {
     let now = Date.now()
     let delta = now - lastrender
     lastrender = now
 
+    objectsinrange = new Array<Sprite>()
+    for (let i = 0; i < sprites.length; i++) {
+        if (
+            Math.abs(player.position.x - sprites[i].position.x) < gamesettins.drawingdistance &&
+            Math.abs(player.position.y - sprites[i].position.y) < gamesettins.drawingdistance
+        ) {
+            sprites[i].angle = Math.atan2(
+                player.position.x - sprites[i].position.x, 
+                player.position.y - sprites[i].position.y
+            )
+            objectsinrange.push(sprites[i])
+        }
+    }
+
     player.getcontrols(controls, map, delta)
-    scene.renderframe(delta, map, player)
+    scene.renderframe(delta, map, player, objectsinrange)
     requestAnimationFrame(render)
 
     fps.innerText = (Math.floor(1000 / delta)).toString()

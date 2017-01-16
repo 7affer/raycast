@@ -1,3 +1,4 @@
+import { Sprite } from './sprite';
 import { IPoint } from './ipoint';
 import { Angle } from './angle';
 import { Colision } from './colision';
@@ -45,11 +46,11 @@ export class Scene {
         let top = Math.floor(this.height2 - height / 2)
         let texleft = Math.floor(textureposition * image.width)
         this.ctx.drawImage(image, texleft, 0, 1, image.height, row, top, 1, height)
-        if (row % 2 == 0) {
+        if (row % 3 == 0) {
             this.ctx.beginPath()
             this.ctx.moveTo(row, top)
             this.ctx.lineTo(row, this.settings.height - top)
-            this.ctx.lineWidth = 2
+            this.ctx.lineWidth = 4
             this.ctx.strokeStyle = '#000000'
             this.ctx.fillStyle = '#000000'
             this.ctx.globalAlpha = distance / this.settings.drawingdistance
@@ -68,19 +69,19 @@ export class Scene {
     private drawfloor(left: number, distance: number, bottom: number, useback: boolean) {
         let height = Math.ceil(this.wallheight / distance)
         let newbottom = Math.floor(this.settings.height - (this.height2 - height / 2))
-        if (useback && left % 2 == 0) {
+        if (useback && left % 3 == 0) {
             this.ctx.beginPath()
             this.ctx.moveTo(left, bottom)
             this.ctx.lineTo(left, newbottom)
-            this.ctx.lineWidth = 2
+            this.ctx.lineWidth = 4
             this.ctx.strokeStyle = this.settings.floorcolor2
             this.ctx.stroke()
         }
         return newbottom
     }
 
-    public renderframe(delta: number, map: Map, player: Player) {
-        this.renderbackground()
+    public renderframe(delta: number, map: Map, player: Player, objects: Array<Sprite>) {
+        this.renderbackground()            
         let rays = player.getrays(this.settings.width)
         let drawfloor = (Math.floor(player.position.x) + Math.floor(player.position.y)) % 2 == 0
         for (let r = 0; r < rays.length; r++) {

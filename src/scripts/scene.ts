@@ -53,8 +53,9 @@ export class Scene {
             this.ctx.lineWidth = 4
             this.ctx.strokeStyle = '#000000'
             this.ctx.fillStyle = '#000000'
-            this.ctx.globalAlpha = distance / this.settings.drawingdistance
+            this.ctx.globalAlpha = (distance / this.settings.drawingdistance) * 0.8
             this.ctx.stroke()
+            this.ctx.closePath()
             this.ctx.globalAlpha = 1
         }
     }
@@ -66,6 +67,15 @@ export class Scene {
         this.renderwall(left, distance, this.assets.walls[wall.type - 1], textureposition)
     }
 
+    private drawobject(left: number, distance: number, object: Sprite, textureposition: number) {
+        let wallheight = Math.ceil(this.wallheight / distance)
+        let bottom = Math.floor(this.height2 + wallheight / 2)
+        let image = this.assets.sprites[object.type]
+        let texleft = Math.floor(textureposition * image.width)
+        let height = wallheight * 0.4
+        this.ctx.drawImage(image, texleft, 0, 1, image.height, left, bottom - height, 1, height)
+    }
+
     private drawfloor(left: number, distance: number, bottom: number, useback: boolean) {
         let height = Math.ceil(this.wallheight / distance)
         let newbottom = Math.floor(this.settings.height - (this.height2 - height / 2))
@@ -73,33 +83,47 @@ export class Scene {
             this.ctx.beginPath()
             this.ctx.moveTo(left, bottom)
             this.ctx.lineTo(left, newbottom)
-            this.ctx.lineWidth = 4
+            this.ctx.lineWidth = 1
             this.ctx.strokeStyle = this.settings.floorcolor2
+            this.ctx.strokeStyle = '#fff'
+            this.ctx.globalAlpha = 0.2
             this.ctx.stroke()
+            this.ctx.closePath()
+            this.ctx.globalAlpha = 1
         }
         return newbottom
     }
 
     public renderframe(delta: number, map: Map, player: Player, objects: Array<Sprite>) {
-        this.renderbackground()            
+        this.renderbackground()
         let rays = player.getrays(this.settings.width)
         let drawfloor = (Math.floor(player.position.x) + Math.floor(player.position.y)) % 2 == 0
         for (let r = 0; r < rays.length; r++) {
             let bottom = this.settings.height
             let drawfloorray = drawfloor
-            let wall: Colision
+            let walldistance: number
             let cos = Math.cos(player.facing.angle - rays[r].angle)
             let colisions = Ray.cast(map, player.position, null, null, rays[r], this.settings.drawingdistance)
-            for (let c = 0; c < colisions.length; c++) {
-                let distance = DistanceCalc.getdistance(player.position, colisions[c].point) * cos
-                if (colisions[c].type > 0) {
-                    wall = colisions[c]
-                    this.drawwall(r, distance, wall, player)
+            for (let colision of colisions) {
+                let distance = DistanceCalc.getdistance(player.position, colision.point) * cos
+                if (colision.type > 0) {
+                    walldistance = distance
+                    this.drawwall(r, distance, colision, player)
                 }
                 bottom = this.drawfloor(r, distance, bottom, drawfloorray)
                 drawfloorray = !drawfloorray
             }
-
+            for (let object of objects) {
+                let distance = DistanceCalc.getdistance(player.position, object.position)
+                if (distance < this.settings.drawingdistance) {
+                    if (distance < 0.25) distance = 0.25
+                    let mdiff = Math.atan2(0.1, distance)
+                    let diff = (rays[r].angle - object.angle) / (2 * mdiff) + 0.5
+                    if (distance < walldistance && diff <= 1) {
+                        this.drawobject(r, distance, object, diff)
+                    }
+                }
+            }
         }
     }
 }

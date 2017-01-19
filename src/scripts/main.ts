@@ -20,15 +20,20 @@ let gamesettins = {
 
 let canvas = <HTMLCanvasElement>document.getElementById('gamecanvas')
 let ctx = canvas.getContext('2d')
-let map = new Map(1000, 0.3)
+let map = new Map(250, 0.3)
 let player = new Player({ x: map.size / 2 + 0.25, y: map.size / 2 + 0.25 }, new Angle(0), gamesettins.fov)
 let controls = new Controls()
 let assetloader = new AssetLoader()
 let scene = new Scene(ctx, gamesettins, assetloader)
 let sprites = new Array<Sprite>()
-for (let i = 0; i < 50; i++) {
+for (let i = 0; i < map.size * 10; i++) {
     sprites.push(
-        new Sprite({ x: Math.random() * 100, y: Math.random() * 100 }, 0)
+        new Sprite({ 
+                x: Math.random() * map.size, 
+                y: Math.random() * map.size 
+            }, 
+            Math.floor(Math.random() * 5)
+        )
     )
 }
 
@@ -52,10 +57,10 @@ function render() {
             Math.abs(player.position.x - sprites[i].position.x) < gamesettins.drawingdistance &&
             Math.abs(player.position.y - sprites[i].position.y) < gamesettins.drawingdistance
         ) {
-            sprites[i].angle = Math.atan2(
-                player.position.x - sprites[i].position.x, 
-                player.position.y - sprites[i].position.y
-            )
+            sprites[i].angle =  Angle.normalizeangle(Math.atan2(
+                sprites[i].position.y - player.position.y,
+                sprites[i].position.x - player.position.x
+            ))
             objectsinrange.push(sprites[i])
         }
     }
@@ -63,7 +68,6 @@ function render() {
     player.getcontrols(controls, map, delta)
     scene.renderframe(delta, map, player, objectsinrange)
     requestAnimationFrame(render)
-
     fps.innerText = (Math.floor(1000 / delta)).toString()
 }
 assetloader.loadall(render)

@@ -15,5 +15,10 @@ describe('Angle', () => {
             expect((new Angle(-Math.PI / 2)).dy).to.be.equal(0)
             expect((new Angle(Math.PI)).dx).to.be.equal(0)
         })
+
+        it('should normalize angles', () => {
+            expect((new Angle(-0.2)).angle).to.be.closeTo(2 * Math.PI - 0.2, 0.0001)
+            expect((new Angle(2 * Math.PI + 0.2).angle)).to.be.closeTo(0.2, 0.0001)
+        })
     })
 })

@@ -14,8 +14,8 @@ let gamesettins = {
     height: Math.floor(width / 1.8),
     fov: 70 * Math.PI / 180,
     drawingdistance: 20,
-    floorcolor1: '#000011',
-    floorcolor2: '#111122'
+    floorcolor1: '#3D2F2D',
+    floorcolor2: '#261311'
 }
 
 let canvas = <HTMLCanvasElement>document.getElementById('gamecanvas')

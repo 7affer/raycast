@@ -28,12 +28,6 @@ export class Scene {
     }
 
     private renderbackground(player: Player) {
-        // var grdceiling = this.ctx.createLinearGradient(0, 0, 0, this.height2);
-        // grdceiling.addColorStop(0, '#aaaaaa');
-        // grdceiling.addColorStop(1, '#222222');
-        // this.ctx.fillStyle = grdceiling;
-        // this.ctx.fillRect(0, 0, this.settings.width, this.height2)
-
         let image = this.assets.skyline[0]
         let PI4 = 4 * Math.PI
         let sleft = ((PI2_0 - (player.facing.angle + player.fov / 2)) / PI4) * image.width
@@ -55,6 +49,7 @@ export class Scene {
         let height = Math.ceil(this.wallheight / distance)
         let top = Math.floor(this.height2 - height / 2)
         let texleft = Math.floor(textureposition * image.width)
+        let shadowdistance = this.settings.drawingdistance * 0.7
         this.ctx.drawImage(image, texleft, 0, 1, image.height, row, top, 1, height)
         if (row % 3 == 0) {
             this.ctx.beginPath()
@@ -63,7 +58,7 @@ export class Scene {
             this.ctx.lineWidth = 4
             this.ctx.strokeStyle = '#000000'
             this.ctx.fillStyle = '#000000'
-            this.ctx.globalAlpha = (distance / this.settings.drawingdistance) * 0.8
+            this.ctx.globalAlpha = Math.min(distance,shadowdistance) / shadowdistance
             this.ctx.stroke()
             this.ctx.globalAlpha = 1
         }

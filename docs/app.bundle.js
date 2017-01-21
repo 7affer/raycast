@@ -66,19 +66,19 @@
 	    width: width,
 	    height: Math.floor(width / 1.8),
 	    fov: 70 * Math.PI / 180,
-	    drawingdistance: 25,
+	    drawingdistance: 20,
 	    floorcolor1: '#000011',
 	    floorcolor2: '#111122'
 	};
 	var canvas = document.getElementById('gamecanvas');
 	var ctx = canvas.getContext('2d');
-	var map = new map_1.Map(250, 0.3);
+	var map = new map_1.Map(150, 0.3);
 	var player = new player_1.Player({ x: map.size / 2 + 0.25, y: map.size / 2 + 0.25 }, new angle_1.Angle(0), gamesettins.fov);
 	var controls = new controls_1.Controls();
 	var assetloader = new assetloader_1.AssetLoader();
 	var scene = new scene_1.Scene(ctx, gamesettins, assetloader);
 	var sprites = new Array();
-	for (var i = 0; i < map.size * 20; i++) {
+	for (var i = 0; i < map.size * 25; i++) {
 	    sprites.push(new sprite_1.Sprite({
 	        x: Math.random() * map.size,
 	        y: Math.random() * map.size
@@ -244,7 +244,7 @@
 	        sleft = Math.floor(sleft);
 	        var swidth = Math.floor((image.width * player.fov) / PI4);
 	        var height = Math.floor(this.settings.height * 0.5);
-	        this.ctx.drawImage(image, sleft, 0, swidth, image.height, -30, 0, this.settings.width, height);
+	        this.ctx.drawImage(image, sleft, 0, swidth, image.height, 0, 0, this.settings.width, height);
 	        this.ctx.fillStyle = this.settings.floorcolor1;
 	        this.ctx.fillRect(0, this.height2, this.settings.width, this.settings.height);
 	    };

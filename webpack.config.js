@@ -20,7 +20,7 @@ module.exports = {
 		extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js']
 	},
 	plugins: [
-		new webpack.optimize.UglifyJsPlugin(),
+		//new webpack.optimize.UglifyJsPlugin(),
 		new ExtractTextPlugin("styles.css"),
 		new CopyWebpackPlugin([{ from: 'src/index.html' }], { copyUnmodified: true })
 	],

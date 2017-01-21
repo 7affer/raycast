@@ -26,7 +26,7 @@ let controls = new Controls()
 let assetloader = new AssetLoader()
 let scene = new Scene(ctx, gamesettins, assetloader)
 let sprites = new Array<Sprite>()
-for (let i = 0; i < map.size * 10; i++) {
+for (let i = 0; i < map.size * 20; i++) {
     sprites.push(
         new Sprite({ 
                 x: Math.random() * map.size, 

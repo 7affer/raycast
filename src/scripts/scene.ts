@@ -1,3 +1,4 @@
+import { PI0_5, PI1_5, PI2_0 } from './mathconst';
 import { Sprite } from './sprite';
 import { IPoint } from './ipoint';
 import { Angle } from './angle';
@@ -55,7 +56,6 @@ export class Scene {
             this.ctx.fillStyle = '#000000'
             this.ctx.globalAlpha = (distance / this.settings.drawingdistance) * 0.8
             this.ctx.stroke()
-            this.ctx.closePath()
             this.ctx.globalAlpha = 1
         }
     }
@@ -64,16 +64,26 @@ export class Scene {
         let modx = wall.point.x - Math.floor(wall.point.x)
         let mody = wall.point.y - Math.floor(wall.point.y)
         let textureposition = Math.abs(modx > mody ? modx : mody)
-        this.renderwall(left, distance, this.assets.walls[wall.type - 1], textureposition)
+        if (distance < 3) {
+            this.renderwall(left, distance, this.assets.walls[wall.type - 1], textureposition)
+        } else if (distance < 8) {
+            this.renderwall(left, distance, this.assets.walls[wall.type - 1 + 5], textureposition)
+        } else {
+            this.renderwall(left, distance, this.assets.walls[wall.type - 1 + 10], textureposition)
+        }
     }
 
-    private drawobject(left: number, distance: number, object: Sprite, textureposition: number) {
-        let wallheight = Math.ceil(this.wallheight / distance)
+    private drawobject(object: Sprite) {
+        let wallheight = Math.ceil(this.wallheight / object.distance)
         let bottom = Math.floor(this.height2 + wallheight / 2)
         let image = this.assets.sprites[object.type]
-        let texleft = Math.floor(textureposition * image.width)
-        let height = wallheight * 0.4
-        this.ctx.drawImage(image, texleft, 0, 1, image.height, left, bottom - height, 1, height)
+        let texleft = Math.floor(object.starttexture * image.width)
+        let texright = Math.floor(object.endtexture * image.width)
+        let height = Math.floor(wallheight * 0.4)
+        let swidth = Math.max(1, texright - texleft)
+        let top = bottom - height
+        let width = Math.max(1, object.end - object.start)
+        this.ctx.drawImage(image, texleft, 0, swidth, image.height, object.start, top, width, height)
     }
 
     private drawfloor(left: number, distance: number, bottom: number, useback: boolean) {
@@ -83,13 +93,9 @@ export class Scene {
             this.ctx.beginPath()
             this.ctx.moveTo(left, bottom)
             this.ctx.lineTo(left, newbottom)
-            this.ctx.lineWidth = 1
+            this.ctx.lineWidth = 3
             this.ctx.strokeStyle = this.settings.floorcolor2
-            this.ctx.strokeStyle = '#fff'
-            this.ctx.globalAlpha = 0.2
             this.ctx.stroke()
-            this.ctx.closePath()
-            this.ctx.globalAlpha = 1
         }
         return newbottom
     }
@@ -98,12 +104,14 @@ export class Scene {
         this.renderbackground()
         let rays = player.getrays(this.settings.width)
         let drawfloor = (Math.floor(player.position.x) + Math.floor(player.position.y)) % 2 == 0
+
         for (let r = 0; r < rays.length; r++) {
             let bottom = this.settings.height
             let drawfloorray = drawfloor
             let walldistance: number
             let cos = Math.cos(player.facing.angle - rays[r].angle)
             let colisions = Ray.cast(map, player.position, null, null, rays[r], this.settings.drawingdistance)
+
             for (let colision of colisions) {
                 let distance = DistanceCalc.getdistance(player.position, colision.point) * cos
                 if (colision.type > 0) {
@@ -113,17 +121,30 @@ export class Scene {
                 bottom = this.drawfloor(r, distance, bottom, drawfloorray)
                 drawfloorray = !drawfloorray
             }
+
             for (let object of objects) {
-                let distance = DistanceCalc.getdistance(player.position, object.position)
-                if (distance < this.settings.drawingdistance) {
-                    if (distance < 0.25) distance = 0.25
-                    let mdiff = Math.atan2(0.1, distance)
-                    let diff = (rays[r].angle - object.angle) / (2 * mdiff) + 0.5
-                    if (distance < walldistance && diff <= 1) {
-                        this.drawobject(r, distance, object, diff)
+                object.distance = DistanceCalc.getdistance(player.position, object.position)
+                if (object.distance < this.settings.drawingdistance && object.distance < walldistance) {
+                    if (object.distance < 0.25) object.distance = 0.25
+                    if (rays[r].angle > PI1_5) rays[r].angle -= PI2_0
+                    if (object.angle > PI1_5) object.angle -= PI2_0
+                    let diff = (rays[r].angle - object.angle) / (2 * Math.atan2(0.05, object.distance))
+                    if (Math.abs(diff) <= 1) {
+                        diff = Math.abs((diff - 1) * 0.5)
+                        if (object.start < 0) {
+                            object.start = r
+                            object.starttexture = diff
+                        }
+                        object.end = r
+                        object.endtexture = diff
                     }
                 }
             }
+        }
+
+        for (let object of objects) {
+            if (object.start >= 0) this.drawobject(object)
+            object.start = -1
         }
     }
 }

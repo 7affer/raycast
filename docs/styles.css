@@ -1,2 +1,9 @@
-body{margin:0 auto;background:#000;font-family:Roboto}body #gamecanvas{display:inline-block;background:#000}
+body {
+  margin: 0 auto 0;
+  background: #000;
+  font-family: Roboto; }
+  body #gamecanvas {
+    display: inline-block;
+    background: #000; }
+
 /*# sourceMappingURL=styles.css.map*/

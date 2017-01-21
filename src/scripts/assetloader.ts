@@ -6,7 +6,17 @@ export class AssetLoader {
             './assets/walls/wall2.jpg',
             './assets/walls/wall3.jpg',
             './assets/walls/wall4.jpg',
-            './assets/walls/wall5.jpg'
+            './assets/walls/wall5.jpg',
+            './assets/walls/wall1b.jpg',
+            './assets/walls/wall2b.jpg',
+            './assets/walls/wall3b.jpg',
+            './assets/walls/wall4b.jpg',
+            './assets/walls/wall5b.jpg',
+            './assets/walls/wall1c.jpg',
+            './assets/walls/wall2c.jpg',
+            './assets/walls/wall3c.jpg',
+            './assets/walls/wall4c.jpg',
+            './assets/walls/wall5c.jpg'
         ]
         this.walls = new Array<HTMLImageElement>()
         for (let item in this.wallssrcs) this.walls.push(new Image())

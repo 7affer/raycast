@@ -66,10 +66,11 @@ export class Controls {
         doc.addEventListener('keydown', (e) => this.keydown(e), false)
         doc.addEventListener('keyup', (e) => this.keyup(e), false)
         doc.addEventListener('pointerlockchange', (e) => { this.lockChangeAlert(doc, canvas) }, false)
+        doc.addEventListener('mozpointerlockchange', (e) => { this.lockChangeAlert(doc, canvas) }, false)
         canvas.addEventListener('touchstart', (e) => { this.touchstart(e) }, false)
         canvas.addEventListener('touchend', (e) => { this.touchend(e) }, false)
         canvas.addEventListener('click', (e) => {
-            canvas.requestPointerLock = canvas.requestPointerLock
+            canvas.requestPointerLock = canvas.requestPointerLock || (<any>canvas).mozRequestPointerLock
             canvas.requestPointerLock()
         }, false)
     }
@@ -77,7 +78,7 @@ export class Controls {
     private mousemovefunction = (e: MouseEvent) => this.mousemove(e)
     private lockChangeAlert(doc: HTMLDocument, canvas: HTMLElement) {
         let canvaselement = <HTMLCanvasElement>document.getElementById('gamecanvas')
-        if (doc.pointerLockElement === canvaselement) {
+        if (doc.pointerLockElement === canvaselement || (<any>document).mozPointerLockElement === canvas) {
             doc.addEventListener("mousemove", this.mousemovefunction, false)
         } else {
             doc.removeEventListener("mousemove", this.mousemovefunction, false)

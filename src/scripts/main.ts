@@ -13,20 +13,20 @@ let gamesettins = {
     width: width,
     height: Math.floor(width / 1.8),
     fov: 70 * Math.PI / 180,
-    drawingdistance: 25,
+    drawingdistance: 20,
     floorcolor1: '#000011',
     floorcolor2: '#111122'
 }
 
 let canvas = <HTMLCanvasElement>document.getElementById('gamecanvas')
 let ctx = canvas.getContext('2d')
-let map = new Map(250, 0.3)
+let map = new Map(150, 0.3)
 let player = new Player({ x: map.size / 2 + 0.25, y: map.size / 2 + 0.25 }, new Angle(0), gamesettins.fov)
 let controls = new Controls()
 let assetloader = new AssetLoader()
 let scene = new Scene(ctx, gamesettins, assetloader)
 let sprites = new Array<Sprite>()
-for (let i = 0; i < map.size * 20; i++) {
+for (let i = 0; i < map.size * 25; i++) {
     sprites.push(
         new Sprite({
             x: Math.random() * map.size,

@@ -41,7 +41,7 @@ export class Scene {
         sleft = Math.floor(sleft)
         let swidth = Math.floor((image.width * player.fov) / PI4)
         let height = Math.floor(this.settings.height * 0.5)
-        this.ctx.drawImage(image, sleft, 0, swidth, image.height, -30, 0, this.settings.width, height)
+        this.ctx.drawImage(image, sleft, 0, swidth, image.height, 0, 0, this.settings.width, height)
         this.ctx.fillStyle = this.settings.floorcolor1
         this.ctx.fillRect(0, this.height2, this.settings.width, this.settings.height)
     }

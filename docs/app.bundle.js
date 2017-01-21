@@ -166,12 +166,18 @@
 	        this.sprites = new Array();
 	        for (var item in this.spritessrcs)
 	            this.sprites.push(new Image());
+	        this.skylinesrcs = [
+	            './assets/sprites/skyline.jpg'
+	        ];
+	        this.skyline = new Array();
+	        for (var item in this.skylinesrcs)
+	            this.skyline.push(new Image());
 	    }
 	    AssetLoader.prototype.isloaded = function () {
 	        return this.loaded == this.toload();
 	    };
 	    AssetLoader.prototype.toload = function () {
-	        return this.walls.length + this.sprites.length;
+	        return this.walls.length + this.sprites.length + this.skyline.length;
 	    };
 	    AssetLoader.prototype.loadall = function (onprogress, callback) {
 	        var _this = this;
@@ -192,6 +198,15 @@
 	                    callback();
 	            };
 	            this.sprites[i].src = this.spritessrcs[i];
+	        }
+	        for (var i in this.skylinesrcs) {
+	            this.skyline[i].onload = function () {
+	                _this.loaded += 1;
+	                onprogress(_this.loaded / _this.toload());
+	                if (_this.isloaded())
+	                    callback();
+	            };
+	            this.skyline[i].src = this.skylinesrcs[i];
 	        }
 	    };
 	    return AssetLoader;
@@ -216,12 +231,20 @@
 	        this.height2 = Math.floor(settings.height / 2);
 	        this.wallheight = Math.floor(settings.height * 0.8);
 	    }
-	    Scene.prototype.renderbackground = function () {
-	        var grdceiling = this.ctx.createLinearGradient(0, 0, 0, this.height2);
-	        grdceiling.addColorStop(0, '#aaaaaa');
-	        grdceiling.addColorStop(1, '#222222');
-	        this.ctx.fillStyle = grdceiling;
-	        this.ctx.fillRect(0, 0, this.settings.width, this.height2);
+	    Scene.prototype.renderbackground = function (player) {
+	        // var grdceiling = this.ctx.createLinearGradient(0, 0, 0, this.height2);
+	        // grdceiling.addColorStop(0, '#aaaaaa');
+	        // grdceiling.addColorStop(1, '#222222');
+	        // this.ctx.fillStyle = grdceiling;
+	        // this.ctx.fillRect(0, 0, this.settings.width, this.height2)
+	        var image = this.assets.skyline[0];
+	        var PI4 = 4 * Math.PI;
+	        var sleft = ((mathconst_1.PI2_0 - (player.facing.angle + player.fov / 2)) / PI4) * image.width;
+	        sleft = Math.abs(sleft);
+	        sleft = Math.floor(sleft);
+	        var swidth = Math.floor((image.width * player.fov) / PI4);
+	        var height = Math.floor(this.settings.height * 0.5);
+	        this.ctx.drawImage(image, sleft, 0, swidth, image.height, -30, 0, this.settings.width, height);
 	        this.ctx.fillStyle = this.settings.floorcolor1;
 	        this.ctx.fillRect(0, this.height2, this.settings.width, this.settings.height);
 	    };
@@ -282,7 +305,7 @@
 	        return newbottom;
 	    };
 	    Scene.prototype.renderframe = function (delta, map, player, objects) {
-	        this.renderbackground();
+	        this.renderbackground(player);
 	        var rays = player.getrays(this.settings.width);
 	        var drawfloor = (Math.floor(player.position.x) + Math.floor(player.position.y)) % 2 == 0;
 	        for (var r = 0; r < rays.length; r++) {

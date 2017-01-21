@@ -27,12 +27,21 @@ export class Scene {
         this.wallheight = Math.floor(settings.height * 0.8)
     }
 
-    private renderbackground() {
-        var grdceiling = this.ctx.createLinearGradient(0, 0, 0, this.height2);
-        grdceiling.addColorStop(0, '#aaaaaa');
-        grdceiling.addColorStop(1, '#222222');
-        this.ctx.fillStyle = grdceiling;
-        this.ctx.fillRect(0, 0, this.settings.width, this.height2)
+    private renderbackground(player: Player) {
+        // var grdceiling = this.ctx.createLinearGradient(0, 0, 0, this.height2);
+        // grdceiling.addColorStop(0, '#aaaaaa');
+        // grdceiling.addColorStop(1, '#222222');
+        // this.ctx.fillStyle = grdceiling;
+        // this.ctx.fillRect(0, 0, this.settings.width, this.height2)
+
+        let image = this.assets.skyline[0]
+        let PI4 = 4 * Math.PI
+        let sleft = ((PI2_0 - (player.facing.angle + player.fov / 2)) / PI4) * image.width
+        sleft = Math.abs(sleft)
+        sleft = Math.floor(sleft)
+        let swidth = Math.floor((image.width * player.fov) / PI4)
+        let height = Math.floor(this.settings.height * 0.5)
+        this.ctx.drawImage(image, sleft, 0, swidth, image.height, -30, 0, this.settings.width, height)
         this.ctx.fillStyle = this.settings.floorcolor1
         this.ctx.fillRect(0, this.height2, this.settings.width, this.settings.height)
     }
@@ -101,7 +110,7 @@ export class Scene {
     }
 
     public renderframe(delta: number, map: Map, player: Player, objects: Array<Sprite>) {
-        this.renderbackground()
+        this.renderbackground(player)
         let rays = player.getrays(this.settings.width)
         let drawfloor = (Math.floor(player.position.x) + Math.floor(player.position.y)) % 2 == 0
 

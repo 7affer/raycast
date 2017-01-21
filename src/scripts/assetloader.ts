@@ -21,7 +21,6 @@ export class AssetLoader {
         this.walls = new Array<HTMLImageElement>()
         for (let item in this.wallssrcs) this.walls.push(new Image())
 
-
         this.spritessrcs = [
             './assets/sprites/sprite1.png',
             './assets/sprites/sprite2.png',
@@ -31,6 +30,12 @@ export class AssetLoader {
         ]
         this.sprites = new Array<HTMLImageElement>()
         for (let item in this.spritessrcs) this.sprites.push(new Image())
+
+        this.skylinesrcs = [
+            './assets/sprites/skyline.jpg'
+        ]
+        this.skyline = new Array<HTMLImageElement>()
+        for (let item in this.skylinesrcs) this.skyline.push(new Image())
     }
 
     private loaded = 0
@@ -38,13 +43,15 @@ export class AssetLoader {
     public walls: Array<HTMLImageElement>
     private spritessrcs: Array<string>
     public sprites: Array<HTMLImageElement>
+    private skylinesrcs: Array<string>
+    public skyline: Array<HTMLImageElement>
 
     private isloaded() {
         return this.loaded == this.toload()
     }
 
     private toload() {
-        return this.walls.length + this.sprites.length
+        return this.walls.length + this.sprites.length + this.skyline.length
     }
 
     public loadall(
@@ -67,6 +74,15 @@ export class AssetLoader {
                 if (this.isloaded()) callback()
             }
             this.sprites[i].src = this.spritessrcs[i]
+        }
+
+        for (let i in this.skylinesrcs) {
+            this.skyline[i].onload = () => {
+                this.loaded += 1
+                onprogress(this.loaded / this.toload())
+                if (this.isloaded()) callback()
+            }
+            this.skyline[i].src = this.skylinesrcs[i]
         }
     }
 }

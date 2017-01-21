@@ -3,6 +3,17 @@ body {
     background: #000;
     font-family: Roboto;
 
+    #loading-container {
+
+        font-size: 26px;
+        margin: 200px 0;
+        color: #fff;
+
+        #loading {
+            font-weight: bold;
+        }
+    }
+
     #gamecanvas {
         display: inline-block;
         background: #000;

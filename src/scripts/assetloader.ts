@@ -40,15 +40,21 @@ export class AssetLoader {
     public sprites: Array<HTMLImageElement>
 
     private isloaded() {
-        return this.loaded ==
-            this.walls.length +
-            this.sprites.length
+        return this.loaded == this.toload()
     }
 
-    public loadall(callback: () => void) {
+    private toload() {
+        return this.walls.length + this.sprites.length
+    }
+
+    public loadall(
+        onprogress: (prog:number) => void,
+        callback: () => void
+    ) {
         for (let i in this.wallssrcs) {
             this.walls[i].onload = () => {
                 this.loaded += 1
+                onprogress(this.loaded / this.toload())
                 if (this.isloaded()) callback()
             }
             this.walls[i].src = this.wallssrcs[i]
@@ -57,6 +63,7 @@ export class AssetLoader {
         for (let i in this.spritessrcs) {
             this.sprites[i].onload = () => {
                 this.loaded += 1
+                onprogress(this.loaded / this.toload())
                 if (this.isloaded()) callback()
             }
             this.sprites[i].src = this.spritessrcs[i]

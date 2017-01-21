@@ -109,7 +109,7 @@
 	    requestAnimationFrame(render);
 	    fps.innerText = (Math.floor(1000 / delta)).toString();
 	}
-	assetloader.loadall(render);
+	assetloader.loadall(function (prog) { return document.getElementById('loading').innerHTML = "Loading: " + Math.ceil(prog * 100) + "%"; }, function () { document.getElementById('loading-container').style.display = 'none'; render(); });
 
 
 /***/ },
@@ -168,15 +168,17 @@
 	            this.sprites.push(new Image());
 	    }
 	    AssetLoader.prototype.isloaded = function () {
-	        return this.loaded ==
-	            this.walls.length +
-	                this.sprites.length;
+	        return this.loaded == this.toload();
 	    };
-	    AssetLoader.prototype.loadall = function (callback) {
+	    AssetLoader.prototype.toload = function () {
+	        return this.walls.length + this.sprites.length;
+	    };
+	    AssetLoader.prototype.loadall = function (onprogress, callback) {
 	        var _this = this;
 	        for (var i in this.wallssrcs) {
 	            this.walls[i].onload = function () {
 	                _this.loaded += 1;
+	                onprogress(_this.loaded / _this.toload());
 	                if (_this.isloaded())
 	                    callback();
 	            };
@@ -185,6 +187,7 @@
 	        for (var i in this.spritessrcs) {
 	            this.sprites[i].onload = function () {
 	                _this.loaded += 1;
+	                onprogress(_this.loaded / _this.toload());
 	                if (_this.isloaded())
 	                    callback();
 	            };

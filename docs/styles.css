@@ -1,15 +1,2 @@
-body {
-  margin: 0 auto 0;
-  background: #000;
-  font-family: Roboto; }
-  body #loading-container {
-    font-size: 26px;
-    margin: 200px 0;
-    color: #fff; }
-    body #loading-container #loading {
-      font-weight: bold; }
-  body #gamecanvas {
-    display: inline-block;
-    background: #000; }
-
+body{margin:0 auto;background:#000;font-family:Roboto}body #loading-container{font-size:26px;margin:200px 0;color:#fff}body #loading-container #loading{font-weight:700}body #gamecanvas{display:inline-block;background:#000}
 /*# sourceMappingURL=styles.css.map*/

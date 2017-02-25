@@ -8,6 +8,7 @@ export class Controls {
     public straferight: boolean = false
     public mouserotateleft: number = 0
     public mouserotateright: number = 0
+    public shoot: boolean = false
 
     public mousemove(e: MouseEvent) {
         if (e.movementX < 0) {
@@ -72,6 +73,7 @@ export class Controls {
         canvas.addEventListener('click', (e) => {
             canvas.requestPointerLock = canvas.requestPointerLock || (<any>canvas).mozRequestPointerLock
             canvas.requestPointerLock()
+            this.shoot = true
         }, false)
     }
 

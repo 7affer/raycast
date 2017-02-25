@@ -36,6 +36,12 @@ export class AssetLoader {
         ]
         this.skyline = new Array<HTMLImageElement>()
         for (let item in this.skylinesrcs) this.skyline.push(new Image())
+
+        this.soundssrcs = [
+            './assets/sounds/gun.mp3'
+        ]
+        this.sounds = new Array<HTMLAudioElement>()
+        for (let item in this.soundssrcs) this.sounds.push(new Audio())
     }
 
     private loaded = 0
@@ -45,13 +51,18 @@ export class AssetLoader {
     public sprites: Array<HTMLImageElement>
     private skylinesrcs: Array<string>
     public skyline: Array<HTMLImageElement>
+    private soundssrcs: Array<string>
+    public sounds: Array<HTMLAudioElement>
 
     private isloaded() {
         return this.loaded == this.toload()
     }
 
     private toload() {
-        return this.walls.length + this.sprites.length + this.skyline.length
+        return this.walls.length + 
+            this.sprites.length + 
+            this.skyline.length +
+            this.sounds.length
     }
 
     public loadall(
@@ -83,6 +94,14 @@ export class AssetLoader {
                 if (this.isloaded()) callback()
             }
             this.skyline[i].src = this.skylinesrcs[i]
+        }
+        for (let i in this.soundssrcs) {
+            this.sounds[i].oncanplaythrough = () => {
+                this.loaded += 1
+                onprogress(this.loaded / this.toload())
+                if (this.isloaded()) callback()
+            }
+            this.sounds[i].src = this.soundssrcs[i]
         }
     }
 }

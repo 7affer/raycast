@@ -1,3 +1,5 @@
+import { AssetLoader } from './assetloader';
+import { Mixer } from './sounds/mixer';
 import { PI0_5 } from './mathconst';
 import { Map } from './map';
 import { Controls } from './controls';
@@ -6,10 +8,15 @@ import { Angle } from './angle';
 
 export class Player {
 
+    private mixer: Mixer
+
     constructor(
         public position: IPoint,
         public facing: Angle,
-        public fov: number) {
+        public fov: number,
+        private loader: AssetLoader
+    ) {
+        this.mixer = new Mixer(loader)
     }
 
     public getrays(columns: number) {
@@ -23,6 +30,10 @@ export class Player {
         return rays
     }
 
+    public shoot() {
+        this.mixer.playsound(0)
+    }
+
     public rotateleft(delta: number, movement: number) {
         this.facing = new Angle(this.facing.angle + Math.PI * movement * delta / 1200)
     }
@@ -34,7 +45,7 @@ export class Player {
     private correctposition(map: Map, position: IPoint): IPoint {
         if (map.getvalue(Math.floor(position.x), Math.floor(this.position.y)) > 0) {
             position.x = this.position.x
-        } 
+        }
         if (map.getvalue(Math.floor(this.position.x), Math.floor(position.y)) > 0) {
             position.y = this.position.y
         }
@@ -90,6 +101,10 @@ export class Player {
         if (controls.mouserotateright) this.rotateright(delta, controls.mouserotateright)
         if (controls.strafeleft) this.strafeleft(delta, map, controls.run)
         if (controls.straferight) this.straferight(delta, map, controls.run)
+        if (controls.shoot) { 
+            this.shoot()
+            controls.shoot = false
+        }
         controls.resetmouserotate()
     }
 }

@@ -9,6 +9,7 @@ import { Angle } from './angle';
 export class Player {
 
     private mixer: Mixer
+    private guncooldown = 0
 
     constructor(
         public position: IPoint,
@@ -16,7 +17,7 @@ export class Player {
         public fov: number,
         private loader: AssetLoader
     ) {
-        this.mixer = new Mixer(loader)
+        if (loader != null) this.mixer = new Mixer(loader)
     }
 
     public getrays(columns: number) {
@@ -31,7 +32,11 @@ export class Player {
     }
 
     public shoot() {
-        this.mixer.playsound(0)
+        let time = (new Date()).getTime()
+        if (this.guncooldown < time) {
+            this.mixer.playsound(0)
+            this.guncooldown = time + 750
+        }
     }
 
     public rotateleft(delta: number, movement: number) {
@@ -101,7 +106,7 @@ export class Player {
         if (controls.mouserotateright) this.rotateright(delta, controls.mouserotateright)
         if (controls.strafeleft) this.strafeleft(delta, map, controls.run)
         if (controls.straferight) this.straferight(delta, map, controls.run)
-        if (controls.shoot) { 
+        if (controls.shoot) {
             this.shoot()
             controls.shoot = false
         }

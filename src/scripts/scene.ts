@@ -58,7 +58,7 @@ export class Scene {
             this.ctx.lineWidth = 4
             this.ctx.strokeStyle = '#000000'
             this.ctx.fillStyle = '#000000'
-            this.ctx.globalAlpha = Math.min(distance,shadowdistance) / shadowdistance
+            this.ctx.globalAlpha = Math.min(distance, shadowdistance) / shadowdistance
             this.ctx.stroke()
             this.ctx.globalAlpha = 1
         }
@@ -104,8 +104,51 @@ export class Scene {
         return newbottom
     }
 
-    public renderframe(delta: number, map: Map, player: Player, objects: Array<Sprite>) {
+    private filterobjectsinrange(player: Player, sprites: Array<Sprite>) {
+        let objectsinrange = new Array<Sprite>()
+        for (let i = 0; i < sprites.length; i++) {
+            if (
+                Math.abs(player.position.x - sprites[i].position.x) < this.settings.drawingdistance &&
+                Math.abs(player.position.y - sprites[i].position.y) < this.settings.drawingdistance
+            ) {
+                sprites[i].angle = Angle.normalizeangle(Math.atan2(
+                    sprites[i].position.y - player.position.y,
+                    sprites[i].position.x - player.position.x
+                ))
+                objectsinrange.push(sprites[i])
+            }
+        }
+        return objectsinrange
+    }
+
+    private getobjectstodraw(player: Player, sprites: Array<Sprite>, ray: Angle, row: number, walldistance: number) {
+        let objecttodraw = new Array<Sprite>()
+        for (let object of sprites) {
+            object.distance = DistanceCalc.getdistance(player.position, object.position)
+            if (object.distance < this.settings.drawingdistance && object.distance < walldistance) {
+                if (object.distance < 0.25) object.distance = 0.25
+                if (ray.angle > PI1_5) ray.angle -= PI2_0
+                if (object.angle > PI1_5) object.angle -= PI2_0
+                let diff = (ray.angle - object.angle) / (2 * Math.atan2(0.05, object.distance))
+                if (Math.abs(diff) <= 1) {
+                    diff = Math.abs((diff - 1) * 0.5)
+                    if (object.start < 0) {
+                        object.start = row
+                        object.starttexture = diff
+                    }
+                    object.end = row
+                    object.endtexture = diff
+                    objecttodraw.push(object)
+                }
+            }
+        }
+        return objecttodraw
+    }
+
+    public renderframe(delta: number, map: Map, player: Player) {
         this.renderbackground(player)
+
+        let objectsinrange = this.filterobjectsinrange(player, map.sprites)
         let rays = player.getrays(this.settings.width)
         let drawfloor = (Math.floor(player.position.x) + Math.floor(player.position.y)) % 2 == 0
 
@@ -126,27 +169,10 @@ export class Scene {
                 drawfloorray = !drawfloorray
             }
 
-            for (let object of objects) {
-                object.distance = DistanceCalc.getdistance(player.position, object.position)
-                if (object.distance < this.settings.drawingdistance && object.distance < walldistance) {
-                    if (object.distance < 0.25) object.distance = 0.25
-                    if (rays[r].angle > PI1_5) rays[r].angle -= PI2_0
-                    if (object.angle > PI1_5) object.angle -= PI2_0
-                    let diff = (rays[r].angle - object.angle) / (2 * Math.atan2(0.05, object.distance))
-                    if (Math.abs(diff) <= 1) {
-                        diff = Math.abs((diff - 1) * 0.5)
-                        if (object.start < 0) {
-                            object.start = r
-                            object.starttexture = diff
-                        }
-                        object.end = r
-                        object.endtexture = diff
-                    }
-                }
-            }
+            let objecttodraw = this.getobjectstodraw(player, objectsinrange, rays[r], r, walldistance)
         }
 
-        for (let object of objects) {
+        for (let object of objectsinrange) {
             if (object.start >= 0) this.drawobject(object)
             object.start = -1
         }

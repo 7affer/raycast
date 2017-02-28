@@ -9,6 +9,11 @@ describe('Map', () => {
       expect(map.map.length).to.be.equal(16)
     })
 
+    it('should initialize sprites', () => {
+      let map = new Map(100, 0.5)
+      expect(map.sprites.length).to.be.greaterThan(0)
+    })
+
     it('should randomize content', () => {
       let map = new Map(4, 1)
       expect(map.map[0]).to.be.greaterThan(0)

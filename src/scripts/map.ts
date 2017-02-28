@@ -1,12 +1,27 @@
+import {Sprite} from './sprite';
+
 export class Map {
     public map: Uint8Array
     public size: number
+    public sprites: Array<Sprite>
 
     constructor(size: number, randparam: number) {
         this.map = new Uint8Array(size * size)
         this.size = size
 
         this.randomize(randparam)
+
+        this.sprites = new Array<Sprite>()
+        for (let i = 0; i < size * 25; i++) {
+            this.sprites.push(
+                new Sprite({
+                    x: Math.random() * size,
+                    y: Math.random() * size
+                },
+                    Math.floor(Math.random() * 5)
+                )
+            )
+        }
     }
 
     public setvalue(x: number, y: number, value: number) {

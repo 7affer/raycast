@@ -1,11 +1,13 @@
-import {Sprite} from './sprite';
+import {AssetLoader} from './assetloader';
+import { Sprite } from './sprite';
 
 export class Map {
     public map: Uint8Array
     public size: number
     public sprites: Array<Sprite>
+    public zombies: Array<Sprite>
 
-    constructor(size: number, randparam: number) {
+    constructor(size: number, randparam: number, assetloader: AssetLoader) {
         this.map = new Uint8Array(size * size)
         this.size = size
 
@@ -14,11 +16,21 @@ export class Map {
         this.sprites = new Array<Sprite>()
         for (let i = 0; i < size * 25; i++) {
             this.sprites.push(
-                new Sprite({
-                    x: Math.random() * size,
-                    y: Math.random() * size
-                },
-                    Math.floor(Math.random() * 5)
+                new Sprite(
+                    Math.random() * size,
+                    Math.random() * size,
+                    assetloader.sprites[Math.floor(Math.random() * assetloader.sprites.length)]
+                )
+            )
+        }
+
+        this.zombies = new Array<Sprite>()
+        for (let i = 0; i < size * 25; i++) {
+            this.zombies.push(
+                new Sprite(
+                    Math.random() * size,
+                    Math.random() * size,
+                    assetloader.zsprites[Math.floor(Math.random() * assetloader.zsprites.length)]
                 )
             )
         }
@@ -52,7 +64,7 @@ export class Map {
                     this.map[i] = 2
                 } else {
                     this.map[i] = 1
-                } 
+                }
             } else {
                 this.map[i] = 0
             }

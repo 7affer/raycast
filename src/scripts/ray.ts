@@ -49,18 +49,18 @@ export class Ray {
             v.manhattandistance -= h.manhattandistance
             let type = map.getvalue(Math.floor(h.x), h.y - (facing.dy > 0 ? 0 : 1))
             if (type > 0) {
-                return [new Colision(h, type)]
+                return [new Colision(h.x, h.y, type)]
             } else {
-                return [new Colision(h, type)]
+                return [new Colision(h.x, h.y, type)]
                     .concat(Ray.cast(map, h, null, v, facing, maxdistance - h.manhattandistance))
             }
         } else {
             h.manhattandistance -= v.manhattandistance
             let type = map.getvalue(v.x - (facing.dx > 0 ? 0 : 1), Math.floor(v.y))
             if (type > 0) {
-                return [new Colision(v, type)]
+                return [new Colision(v.x, v.y, type)]
             } else {
-                return [new Colision(v, type)]
+                return [new Colision(v.x, v.y, type)]
                     .concat(Ray.cast(map, v, h, null, facing, maxdistance - v.manhattandistance))
             }
         }

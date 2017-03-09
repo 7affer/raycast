@@ -27,13 +27,13 @@ export class Scene {
         this.wallheight = Math.floor(settings.height * 0.8)
     }
 
-    private renderbackground(player: Player) {
+    private renderbackground(player: Player, fov: number) {
         let image = this.assets.skyline[0]
         let PI4 = 4 * Math.PI
-        let sleft = ((PI2_0 - (player.facing.angle + player.fov / 2)) / PI4) * image.width
+        let sleft = ((PI2_0 - (player.facing.angle + fov / 2)) / PI4) * image.width
         sleft = Math.abs(sleft)
         sleft = Math.floor(sleft)
-        let swidth = Math.floor((image.width * player.fov) / PI4)
+        let swidth = Math.floor((image.width * fov) / PI4)
         let height = Math.floor(this.settings.height * 0.5)
         this.ctx.drawImage(image, sleft, 0, swidth, image.height, 0, 0, this.settings.width, height)
         this.ctx.fillStyle = this.settings.floorcolor1
@@ -65,8 +65,8 @@ export class Scene {
     }
 
     private drawwall(left: number, distance: number, wall: Colision, player: Player) {
-        let modx = wall.point.x - Math.floor(wall.point.x)
-        let mody = wall.point.y - Math.floor(wall.point.y)
+        let modx = wall.x - Math.floor(wall.x)
+        let mody = wall.y - Math.floor(wall.y)
         let textureposition = Math.abs(modx > mody ? modx : mody)
         if (distance < 3) {
             this.renderwall(left, distance, this.assets.walls[wall.type - 1], textureposition)
@@ -80,14 +80,13 @@ export class Scene {
     private drawobject(object: Sprite) {
         let wallheight = Math.ceil(this.wallheight / object.distance)
         let bottom = Math.floor(this.height2 + wallheight / 2)
-        let image = this.assets.sprites[object.type]
-        let texleft = Math.floor(object.starttexture * image.width)
-        let texright = Math.floor(object.endtexture * image.width)
+        let texleft = Math.floor(object.starttexture * object.image.width)
+        let texright = Math.floor(object.endtexture * object.image.width)
         let height = Math.floor(wallheight * 0.4)
         let swidth = Math.max(1, texright - texleft)
         let top = bottom - height
         let width = Math.max(1, object.end - object.start)
-        this.ctx.drawImage(image, texleft, 0, swidth, image.height, object.start, top, width, height)
+        this.ctx.drawImage(object.image, texleft, 0, swidth, object.image.height, object.start, top, width, height)
     }
 
     private drawfloor(left: number, distance: number, bottom: number, useback: boolean) {
@@ -108,12 +107,12 @@ export class Scene {
         let objectsinrange = new Array<Sprite>()
         for (let i = 0; i < sprites.length; i++) {
             if (
-                Math.abs(player.position.x - sprites[i].position.x) < this.settings.drawingdistance &&
-                Math.abs(player.position.y - sprites[i].position.y) < this.settings.drawingdistance
+                Math.abs(player.x - sprites[i].x) < this.settings.drawingdistance &&
+                Math.abs(player.y - sprites[i].y) < this.settings.drawingdistance
             ) {
                 sprites[i].angle = Angle.normalizeangle(Math.atan2(
-                    sprites[i].position.y - player.position.y,
-                    sprites[i].position.x - player.position.x
+                    sprites[i].y - player.y,
+                    sprites[i].x - player.x
                 ))
                 objectsinrange.push(sprites[i])
             }
@@ -124,7 +123,7 @@ export class Scene {
     private getobjectstodraw(player: Player, sprites: Array<Sprite>, ray: Angle, row: number, walldistance: number) {
         let objecttodraw = new Array<Sprite>()
         for (let object of sprites) {
-            object.distance = DistanceCalc.getdistance(player.position, object.position)
+            object.distance = DistanceCalc.getdistance(player, object)
             if (object.distance < this.settings.drawingdistance && object.distance < walldistance) {
                 if (object.distance < 0.25) object.distance = 0.25
                 if (ray.angle > PI1_5) ray.angle -= PI2_0
@@ -145,22 +144,25 @@ export class Scene {
         return objecttodraw
     }
 
-    public renderframe(delta: number, map: Map, player: Player) {
-        this.renderbackground(player)
+    public renderframe(delta: number, map: Map, player: Player, fov: number) {
+        this.renderbackground(player, fov)
 
+        let allobjecttodraw = new Array<Sprite>()
         let objectsinrange = this.filterobjectsinrange(player, map.sprites)
-        let rays = player.getrays(this.settings.width)
-        let drawfloor = (Math.floor(player.position.x) + Math.floor(player.position.y)) % 2 == 0
+        let zombiesingange = this.filterobjectsinrange(player, map.zombies)
+
+        let rays = player.getrays(this.settings.width, this.settings.fov)
+        let drawfloor = (Math.floor(player.x) + Math.floor(player.y)) % 2 == 0
 
         for (let r = 0; r < rays.length; r++) {
             let bottom = this.settings.height
             let drawfloorray = drawfloor
             let walldistance: number
             let cos = Math.cos(player.facing.angle - rays[r].angle)
-            let colisions = Ray.cast(map, player.position, null, null, rays[r], this.settings.drawingdistance)
+            let colisions = Ray.cast(map, player, null, null, rays[r], this.settings.drawingdistance)
 
             for (let colision of colisions) {
-                let distance = DistanceCalc.getdistance(player.position, colision.point) * cos
+                let distance = DistanceCalc.getdistance(player, colision) * cos
                 if (colision.type > 0) {
                     walldistance = distance
                     this.drawwall(r, distance, colision, player)
@@ -170,9 +172,15 @@ export class Scene {
             }
 
             let objecttodraw = this.getobjectstodraw(player, objectsinrange, rays[r], r, walldistance)
+            let zombiestodraw = this.getobjectstodraw(player, zombiesingange, rays[r], r, walldistance)
+            allobjecttodraw = objecttodraw.concat(zombiestodraw)
         }
 
         for (let object of objectsinrange) {
+            if (object.start >= 0) this.drawobject(object)
+            object.start = -1
+        }
+        for (let object of zombiesingange) {
             if (object.start >= 0) this.drawobject(object)
             object.start = -1
         }

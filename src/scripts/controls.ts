@@ -26,6 +26,7 @@ export class Controls {
     }
 
     public keydown(e: KeyboardEvent) {
+        if (e.keyCode == 17) this.shoot = true
         if (e.keyCode == 37) this.rotateleft = true
         if (e.keyCode == 68) this.strafeleft = true
         if (e.keyCode == 39) this.rotateright = true
@@ -35,12 +36,16 @@ export class Controls {
         this.run = e.shiftKey
     }
 
-    public touchstart(e: TouchEvent) {
+    public touchstart(e: TouchEvent, canvas: HTMLCanvasElement) {
         var t = e.touches[0];
         this.touchend(e);
-        if (t.pageX < window.innerWidth * 0.333) this.rotateleft = true
-        else if (t.pageX < window.innerWidth * 0.666) this.forward = true
-        else this.rotateright = true
+        if (t.pageY < canvas.height * 0.5) {
+            this.shoot = true
+        } else {
+            if (t.pageX < window.innerWidth * 0.333) this.rotateleft = true
+            else if (t.pageX < window.innerWidth * 0.666) this.forward = true
+            else this.rotateright = true
+        }
         e.preventDefault();
         e.stopPropagation();
     }
@@ -63,12 +68,12 @@ export class Controls {
         this.run = e.shiftKey
     }
 
-    public bindevents(doc: HTMLDocument, canvas: HTMLElement) {
+    public bindevents(doc: HTMLDocument, canvas: HTMLCanvasElement) {
         doc.addEventListener('keydown', (e) => this.keydown(e), false)
         doc.addEventListener('keyup', (e) => this.keyup(e), false)
         doc.addEventListener('pointerlockchange', (e) => { this.lockChangeAlert(doc, canvas) }, false)
         doc.addEventListener('mozpointerlockchange', (e) => { this.lockChangeAlert(doc, canvas) }, false)
-        canvas.addEventListener('touchstart', (e) => { this.touchstart(e) }, false)
+        canvas.addEventListener('touchstart', (e) => { this.touchstart(e, canvas) }, false)
         canvas.addEventListener('touchend', (e) => { this.touchend(e) }, false)
         canvas.addEventListener('click', (e) => {
             canvas.requestPointerLock = canvas.requestPointerLock || (<any>canvas).mozRequestPointerLock

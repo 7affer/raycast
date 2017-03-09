@@ -1,3 +1,4 @@
+import { AssetLoader } from '../src/scripts/assetloader';
 import { Colision } from '../src/scripts/colision';
 import { Map } from '../src/scripts/map';
 import { Angle } from '../src/scripts/angle';
@@ -8,7 +9,7 @@ describe('Ray', () => {
 
   describe('cast()', () => {
     it('should return array of colisions', () => {
-      let map = new Map(2, 0)
+      let map = new Map(2, 0, new AssetLoader())
       let c1 = Ray.cast(map, { x: 0, y: 0 }, null, null, new Angle(0), 5)
       expect(c1).to.have.property('length', 5)
       let c2 = Ray.cast(map, { x: 0, y: 0 }, null, null, new Angle(Math.PI / 4 - 0.0001), 5)
@@ -16,14 +17,14 @@ describe('Ray', () => {
     })
 
     it('should return nearest first', () => {
-      let map = new Map(100, 0)
-      map.setvalue(0,50, 1)
+      let map = new Map(100, 0, new AssetLoader())
+      map.setvalue(0, 50, 1)
       let c1 = Ray.cast(map, { x: 0.5, y: 0.5 }, null, null, new Angle(0), 100)
-      expect(c1[0].point.x).to.be.lessThan(c1[c1.length - 1].point.x)
+      expect(c1[0].x).to.be.lessThan(c1[c1.length - 1].x)
     })
 
     it('should get proper cell in map', () => {
-      let map = new Map(5, 0)
+      let map = new Map(5, 0, new AssetLoader())
       map.setvalue(3, 2, 1)
       map.setvalue(1, 2, 1)
       map.setvalue(2, 1, 1)

@@ -1,6 +1,6 @@
 import { Angle } from './angle';
 import { IPoint } from './ipoint';
-export class Sprite {
+export class Sprite implements IPoint {
 
     public angle: number
     public start: number = -1
@@ -10,8 +10,9 @@ export class Sprite {
     public distance: number
 
     constructor(
-        public position: IPoint,
-        public type: number
+        public x: number,
+        public y: number,
+        public image: HTMLImageElement
     ) {
     }
 }

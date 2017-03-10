@@ -9,7 +9,7 @@ describe('Ray', () => {
 
   describe('cast()', () => {
     it('should return array of colisions', () => {
-      let map = new Map(2, 0, new AssetLoader())
+      let map = new Map(2, 0, new AssetLoader(), null)
       let c1 = Ray.cast(map, { x: 0, y: 0 }, null, null, new Angle(0), 5)
       expect(c1).to.have.property('length', 5)
       let c2 = Ray.cast(map, { x: 0, y: 0 }, null, null, new Angle(Math.PI / 4 - 0.0001), 5)
@@ -17,14 +17,14 @@ describe('Ray', () => {
     })
 
     it('should return nearest first', () => {
-      let map = new Map(100, 0, new AssetLoader())
+      let map = new Map(100, 0, new AssetLoader(), null)
       map.setvalue(0, 50, 1)
       let c1 = Ray.cast(map, { x: 0.5, y: 0.5 }, null, null, new Angle(0), 100)
       expect(c1[0].x).to.be.lessThan(c1[c1.length - 1].x)
     })
 
     it('should get proper cell in map', () => {
-      let map = new Map(5, 0, new AssetLoader())
+      let map = new Map(5, 0, new AssetLoader(), null)
       map.setvalue(3, 2, 1)
       map.setvalue(1, 2, 1)
       map.setvalue(2, 1, 1)
@@ -60,11 +60,6 @@ describe('Ray', () => {
       expect(c.x).to.be.closeTo(1.732050, 0.01)
       expect(c.y).to.be.closeTo(1, 0.01)
     })
-
-    it('should calculate manhattan distance origin', () => {
-      let c = Ray.nearesty({ x: 1, y: 1 }, new Angle(Math.PI / 4))
-      expect(c.manhattandistance).to.be.closeTo(2, 0.01)
-    })
   })
 
   describe('nearestx()', () => {
@@ -87,11 +82,6 @@ describe('Ray', () => {
       let c = Ray.nearestx({ x: 0, y: 0 }, new Angle(Math.PI / 6))
       expect(c.x).to.be.closeTo(1, 0.01)
       expect(c.y).to.be.closeTo(0.577350, 0.01)
-    })
-
-    it('should calculate length to origin', () => {
-      let c = Ray.nearestx({ x: 1, y: 2 }, new Angle(Math.PI / 4))
-      expect(c.manhattandistance).to.be.closeTo(2, 0.01)
     })
   })
 })

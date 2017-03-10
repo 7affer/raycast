@@ -1,4 +1,3 @@
-import { Sprite } from './sprite';
 import { AssetLoader } from './assetloader';
 import { Scene } from './scene';
 import { Controls } from './controls';
@@ -15,7 +14,8 @@ let gamesettins = {
     fov: 70 * Math.PI / 180,
     drawingdistance: 20,
     floorcolor1: '#3D2F2D',
-    floorcolor2: '#261311'
+    floorcolor2: '#261311',
+    wallheight: Math.floor(width / 1.8) * 0.8
 }
 
 let assetloader = new AssetLoader()
@@ -26,7 +26,7 @@ assetloader.loadall(
         document.getElementById('loading-container').style.display = 'none'; 
         let canvas = <HTMLCanvasElement>document.getElementById('gamecanvas')
         let ctx = canvas.getContext('2d')
-        let map = new Map(150, 0.3, assetloader)
+        let map = new Map(150, 0.3, assetloader, gamesettins)
         let controls = new Controls()
         let player = new Player(map.size / 2 + 0.25, map.size / 2 + 0.25, new Angle(0), assetloader)
         let scene = new Scene(ctx, gamesettins, assetloader)

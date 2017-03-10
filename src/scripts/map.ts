@@ -1,36 +1,38 @@
-import {AssetLoader} from './assetloader';
-import { Sprite } from './sprite';
+import { ISettings } from './isettings';
+import { AssetLoader } from './assetloader';
+import { Sprite } from "./sprites/sprite";
+import { ISprite } from "./sprites/isprite";
+import { Zombie } from "./sprites/zombie";
 
 export class Map {
     public map: Uint8Array
     public size: number
-    public sprites: Array<Sprite>
-    public zombies: Array<Sprite>
+    public sprites: Array<ISprite>
 
-    constructor(size: number, randparam: number, assetloader: AssetLoader) {
+    constructor(size: number, randparam: number, assetloader: AssetLoader, settings: ISettings) {
         this.map = new Uint8Array(size * size)
         this.size = size
 
         this.randomize(randparam)
 
-        this.sprites = new Array<Sprite>()
-        for (let i = 0; i < size * 25; i++) {
+        this.sprites = new Array<ISprite>()
+        for (let i = 0; i < size * 5; i++) {
             this.sprites.push(
                 new Sprite(
                     Math.random() * size,
                     Math.random() * size,
-                    assetloader.sprites[Math.floor(Math.random() * assetloader.sprites.length)]
+                    assetloader.sprites[Math.floor(Math.random() * assetloader.sprites.length)],
+                    settings
                 )
             )
         }
-
-        this.zombies = new Array<Sprite>()
-        for (let i = 0; i < size * 25; i++) {
-            this.zombies.push(
-                new Sprite(
+        for (let i = 0; i < size * 30; i++) {
+            this.sprites.push(
+                new Zombie(
                     Math.random() * size,
                     Math.random() * size,
-                    assetloader.zsprites[Math.floor(Math.random() * assetloader.zsprites.length)]
+                    assetloader.zsprites[Math.floor(Math.random() * assetloader.zsprites.length)],
+                    settings
                 )
             )
         }

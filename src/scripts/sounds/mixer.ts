@@ -17,17 +17,19 @@ export class Mixer {
     private audiochannels: Array<Sound>
 
     public playsound(index: number) {
-        for (let a = 0; a < this.audiochannels.length; a++) {
-            let time = new Date()
-            let now = time.getTime()
-            console.log(this.loader.sounds[index].duration)
-            if (this.audiochannels[a].finish < now) {
-                this.audiochannels[a].finish = now + this.loader.sounds[index].duration * 1000
-                this.audiochannels[a].audioel.src = this.loader.sounds[index].src
-                this.audiochannels[a].audioel.play()
-                break
-            }
-        }
+        var audio = new Audio(this.loader.soundssrcs[index]);
+        audio.play();
+        // for (let a = 0; a < this.audiochannels.length; a++) {
+        //     let time = new Date()
+        //     let now = time.getTime()
+        //     console.log(this.loader.sounds[index].duration)
+        //     if (this.audiochannels[a].finish < now) {
+        //         this.audiochannels[a].finish = now + this.loader.sounds[index].duration * 1000
+        //         this.audiochannels[a].audioel.src = this.loader.sounds[index].src
+        //         this.audiochannels[a].audioel.play()
+        //         break
+        //     }
+        // }
     }
 }
 

@@ -59,7 +59,7 @@ export class AssetLoader {
     public zsprites: Array<HTMLImageElement>
     private skylinesrcs: Array<string>
     public skyline: Array<HTMLImageElement>
-    private soundssrcs: Array<string>
+    public soundssrcs: Array<string>
     public sounds: Array<HTMLAudioElement>
 
     private mobilecheck = function () {

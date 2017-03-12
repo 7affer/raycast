@@ -4,9 +4,9 @@ import { ISprite } from './isprite';
 
 export class Sprite implements ISprite {
 
-    public angle: number
     public left: number = -1
     public width: number = 0
+    public anglewidth: number = 0.2
     public starttexture: number
     public endtexture: number
     public distance: number

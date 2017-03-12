@@ -8,28 +8,6 @@ import { Map } from './map';
 
 export class Ray {
 
-    public static nearesty(origin: IPoint, facing: Angle): IPoint {
-        let nexty = Math.floor(origin.y + facing.dy)
-        if (nexty == origin.y) nexty -= 1
-        let dy = nexty - origin.y
-        let dx = facing.ctg * dy
-        return {
-            x: dx + origin.x,
-            y: nexty
-        }
-    }
-
-    public static nearestx(origin: IPoint, facing: Angle): IPoint {
-        let nextx = Math.floor(origin.x + facing.dx)
-        if (nextx == origin.x) nextx -= 1
-        let dx = nextx - origin.x
-        let dy = facing.tg * dx
-        return {
-            x: nextx,
-            y: dy + origin.y
-        }
-    }
-
     public static cast(
         map: Map,
         origin: IPoint,
@@ -62,6 +40,28 @@ export class Ray {
                 return [new Colision(v.x, v.y, type)]
                     .concat(Ray.cast(map, v, h, null, facing, maxdistance - distancev))
             }
+        }
+    }
+
+    public static nearesty(origin: IPoint, facing: Angle): IPoint {
+        let nexty = Math.floor(origin.y + facing.dy)
+        if (nexty == origin.y) nexty -= 1
+        let dy = nexty - origin.y
+        let dx = facing.ctg * dy
+        return {
+            x: dx + origin.x,
+            y: nexty
+        }
+    }
+
+    public static nearestx(origin: IPoint, facing: Angle): IPoint {
+        let nextx = Math.floor(origin.x + facing.dx)
+        if (nextx == origin.x) nextx -= 1
+        let dx = nextx - origin.x
+        let dy = facing.tg * dx
+        return {
+            x: nextx,
+            y: dy + origin.y
         }
     }
 }

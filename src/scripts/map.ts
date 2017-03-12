@@ -1,40 +1,26 @@
 import { ISettings } from './isettings';
 import { AssetLoader } from './assetloader';
-import { Sprite } from "./sprites/sprite";
 import { ISprite } from "./sprites/isprite";
-import { Zombie } from "./sprites/zombie";
+import { SpritesFactory, SpriteType } from "./sprites/spritesfactory"
 
 export class Map {
     public map: Uint8Array
     public size: number
     public sprites: Array<ISprite>
 
-    constructor(size: number, randparam: number, assetloader: AssetLoader, settings: ISettings) {
+    constructor(size: number, randparam: number, loader: AssetLoader, settings: ISettings) {
         this.map = new Uint8Array(size * size)
         this.size = size
-
         this.randomize(randparam)
 
+        let spritesfactory = new SpritesFactory(loader, size, settings)
+
         this.sprites = new Array<ISprite>()
-        for (let i = 0; i < size * 5; i++) {
-            this.sprites.push(
-                new Sprite(
-                    Math.random() * size,
-                    Math.random() * size,
-                    assetloader.sprites[Math.floor(Math.random() * assetloader.sprites.length)],
-                    settings
-                )
-            )
+        for (let i = 0; i < size * 10; i++) {
+            this.sprites.push(spritesfactory.createsprite(SpriteType.Static))
         }
         for (let i = 0; i < size * 30; i++) {
-            this.sprites.push(
-                new Zombie(
-                    Math.random() * size,
-                    Math.random() * size,
-                    assetloader.zsprites[Math.floor(Math.random() * assetloader.zsprites.length)],
-                    settings
-                )
-            )
+            this.sprites.push(spritesfactory.createsprite(SpriteType.Zombie))
         }
     }
 

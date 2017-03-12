@@ -92,36 +92,35 @@ export class Scene {
     private filterobjectsinrange(player: Player, sprites: Array<ISprite>) {
         let objectsinrange = new Array<ISprite>()
         for (let i = 0; i < sprites.length; i++) {
-            if (
-                Math.abs(player.x - sprites[i].x) < this.settings.drawingdistance &&
-                Math.abs(player.y - sprites[i].y) < this.settings.drawingdistance
-            ) {
-                sprites[i].angle = Angle.normalizeangle(Math.atan2(
-                    sprites[i].y - player.y,
-                    sprites[i].x - player.x
-                ))
+            if (DistanceCalc.mdistance(player, sprites[i]) < this.settings.drawingdistance) {
                 objectsinrange.push(sprites[i])
             }
         }
         return objectsinrange
     }
 
-    private getobjectstodraw(player: Player, sprites: Array<ISprite>, ray: Angle, row: number, walldistance: number) {
+    private getobjectstodraw(player: Player, sprites: Array<ISprite>, rayangle: number, left: number, nearestwalldistance: number) {
         let objecttodraw = new Array<ISprite>()
         for (let object of sprites) {
+            var sprite_player_angle = Math.atan2(object.y - player.y, object.x - player.x)
+
             object.distance = DistanceCalc.distance(player, object)
-            if (object.distance < this.settings.drawingdistance && object.distance < walldistance) {
+            if (object.distance < this.settings.drawingdistance && object.distance < nearestwalldistance) {
                 if (object.distance < 0.20) object.distance = 0.20
-                if (ray.angle > PI1_5) ray.angle -= PI2_0
-                if (object.angle > PI1_5) object.angle -= PI2_0
-                let diff = (ray.angle - object.angle) / (2 * Math.atan2(0.05, object.distance))
+                
+                let anglediff = rayangle - sprite_player_angle
+                if(anglediff < -Math.PI) anglediff += PI2_0 
+                if(anglediff > Math.PI) anglediff -= PI2_0
+                              
+                let diff = anglediff / Math.atan2(object.anglewidth, object.distance)
+
                 if (Math.abs(diff) <= 1) {
-                    diff = Math.abs((diff - 1) * 0.5)
+                    diff = Math.abs((diff - 1))
                     if (object.left < 0) {
-                        object.left = row
+                        object.left = left
                         object.starttexture = diff
                     }
-                    object.width++
+                    object.width += 5
                     object.endtexture = diff
                     objecttodraw.push(object)
                 }
@@ -154,7 +153,9 @@ export class Scene {
                 drawfloorray = !drawfloorray
             }
 
-            this.getobjectstodraw(player, objectsinrange, rays[r], r, walldistance)
+            if(r % 5 == 0) {
+                this.getobjectstodraw(player, objectsinrange, rays[r].angle, r, walldistance)
+            }
         }
 
         for (let object of objectsinrange) {

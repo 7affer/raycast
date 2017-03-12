@@ -4,9 +4,9 @@ import { ISprite } from './isprite';
 
 export class Zombie implements ISprite {
 
-    public angle: number
     public left: number = -1
     public width: number = 0
+    public anglewidth: number = 0.35
     public starttexture: number
     public endtexture: number
     public distance: number
@@ -30,7 +30,7 @@ export class Zombie implements ISprite {
         let bottom = Math.floor(this.height2 + wallheight / 2)
         let texleft = Math.floor(this.starttexture * this.image.width)
         let texright = Math.floor(this.endtexture * this.image.width)
-        let height = Math.floor(wallheight * 0.4)
+        let height = Math.floor(wallheight * 0.8)
         let swidth = Math.max(1, texright - texleft)
         let top = bottom - height
         ctx.drawImage(this.image, texleft, 0, swidth, this.image.height, this.left, top, this.width, height)

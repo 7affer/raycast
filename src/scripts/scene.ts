@@ -1,4 +1,5 @@
-import { PI0_5, PI1_5, PI2_0 } from './mathconst';
+import { PI0_5, PI1_5, PI2_0, PI4_0 } from './helpers/mathconst';
+import { DistanceCalc } from './helpers/distancecalc';
 import { IPoint } from './ipoint';
 import { Angle } from './angle';
 import { Colision } from './colision';
@@ -8,13 +9,14 @@ import { Map } from './map';
 import { Player } from './player';
 import { Controls } from './controls';
 import { Ray } from './ray';
-import { DistanceCalc } from './distancecalc';
 import { ISprite } from "./sprites/isprite";
+import { BackgroundRenderer } from "./renders/backgroundrenderer";
 
 export class Scene {
 
     private lastrender: number
     private height2: number
+    private backgroundrenderer: BackgroundRenderer
 
     constructor(
         private ctx: CanvasRenderingContext2D,
@@ -23,20 +25,20 @@ export class Scene {
     ) {
         this.lastrender = Date.now()
         this.height2 = Math.floor(settings.height / 2)
+        this.backgroundrenderer = new BackgroundRenderer(assets, settings)
     }
 
-    private renderbackground(player: Player, fov: number) {
-        let image = this.assets.skyline[0]
-        let PI4 = 4 * Math.PI
-        let sleft = ((PI2_0 - (player.facing.angle + fov / 2)) / PI4) * image.width
-        sleft = Math.abs(sleft)
-        sleft = Math.floor(sleft)
-        let swidth = Math.floor((image.width * fov) / PI4)
-        let height = Math.floor(this.settings.height * 0.5)
-        this.ctx.drawImage(image, sleft, 0, swidth, image.height, 0, 0, this.settings.width, height)
-        this.ctx.fillStyle = this.settings.floorcolor1
-        this.ctx.fillRect(0, this.height2, this.settings.width, this.settings.height)
-    }
+    // private renderbackground(player: Player, fov: number) {
+    //     let image = this.assets.skyline[0]
+    //     let sleft = ((PI2_0 - (player.facing.angle + fov / 2)) / PI4_0) * image.width
+    //     sleft = Math.abs(sleft)
+    //     sleft = Math.floor(sleft)
+    //     let swidth = Math.floor((image.width * fov) / PI4_0)
+    //     let height = Math.floor(this.settings.height * 0.5)
+    //     this.ctx.drawImage(image, sleft, 0, swidth, image.height, 0, 0, this.settings.width, height)
+    //     this.ctx.fillStyle = this.settings.floorcolor1
+    //     this.ctx.fillRect(0, this.height2, this.settings.width, this.settings.height)
+    // }
 
     private renderwall(
         row: number,
@@ -130,8 +132,8 @@ export class Scene {
     }
 
     public renderframe(delta: number, map: Map, player: Player, fov: number) {
-        this.renderbackground(player, fov)
-
+        
+        this.backgroundrenderer.render(this.ctx, player.facing.angle)
         let objectsinrange = this.filterobjectsinrange(player, map.sprites)
         let rays = player.getrays(this.settings.width, this.settings.fov)
         let drawfloor = (Math.floor(player.x) + Math.floor(player.y)) % 2 == 0

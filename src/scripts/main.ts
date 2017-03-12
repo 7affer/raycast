@@ -11,6 +11,7 @@ let width = window.innerWidth < 1024 ? window.innerWidth : 1024
 let gamesettins = {
     width: width,
     height: Math.floor(width / 1.8),
+    height2: Math.floor(width / 1.8 / 2),
     fov: 70 * Math.PI / 180,
     drawingdistance: 20,
     floorcolor1: '#3D2F2D',

@@ -15,7 +15,7 @@ class SpritesFactory {
 
     }
 
-    public createsprite(type: SpriteType) {
+    public createsprite(type: SpriteType):ISprite {
         switch (type) {
             case SpriteType.Static: return new Sprite(
                 Math.random() * this.mapsize,

@@ -11,12 +11,14 @@ import { Controls } from './controls';
 import { Ray } from './ray';
 import { ISprite } from "./sprites/isprite";
 import { BackgroundRenderer } from "./renders/backgroundrenderer";
+import { Sort } from "./helpers/quicksort";
 
 export class Scene {
 
     private lastrender: number
     private height2: number
     private backgroundrenderer: BackgroundRenderer
+    private skipobjectdetectionrays: number = 4
 
     constructor(
         private ctx: CanvasRenderingContext2D,
@@ -27,18 +29,6 @@ export class Scene {
         this.height2 = Math.floor(settings.height / 2)
         this.backgroundrenderer = new BackgroundRenderer(assets, settings)
     }
-
-    // private renderbackground(player: Player, fov: number) {
-    //     let image = this.assets.skyline[0]
-    //     let sleft = ((PI2_0 - (player.facing.angle + fov / 2)) / PI4_0) * image.width
-    //     sleft = Math.abs(sleft)
-    //     sleft = Math.floor(sleft)
-    //     let swidth = Math.floor((image.width * fov) / PI4_0)
-    //     let height = Math.floor(this.settings.height * 0.5)
-    //     this.ctx.drawImage(image, sleft, 0, swidth, image.height, 0, 0, this.settings.width, height)
-    //     this.ctx.fillStyle = this.settings.floorcolor1
-    //     this.ctx.fillRect(0, this.height2, this.settings.width, this.settings.height)
-    // }
 
     private renderwall(
         row: number,
@@ -106,25 +96,25 @@ export class Scene {
         for (let object of sprites) {
             var sprite_player_angle = Math.atan2(object.y - player.y, object.x - player.x)
 
-            object.distance = DistanceCalc.distance(player, object)
-            if (object.distance < this.settings.drawingdistance && object.distance < nearestwalldistance) {
-                if (object.distance < 0.20) object.distance = 0.20
-                
-                let anglediff = rayangle - sprite_player_angle
-                if(anglediff < -Math.PI) anglediff += PI2_0 
-                if(anglediff > Math.PI) anglediff -= PI2_0
-                              
-                let diff = anglediff / Math.atan2(object.anglewidth, object.distance)
+            let anglediff = rayangle - sprite_player_angle
+            if(anglediff < -Math.PI) anglediff += PI2_0 
+            if(anglediff > Math.PI) anglediff -= PI2_0
 
-                if (Math.abs(diff) <= 1) {
-                    diff = Math.abs((diff - 1))
-                    if (object.left < 0) {
-                        object.left = left
-                        object.starttexture = diff
+            if(anglediff < this.settings.fov){
+                object.distance = DistanceCalc.distance(player, object)
+                if (object.distance < this.settings.drawingdistance && object.distance < nearestwalldistance) {
+                    if (object.distance < 0.20) object.distance = 0.20
+                    let diff = anglediff / Math.atan2(object.anglewidth, object.distance)
+                    if (Math.abs(diff) <= 1) {
+                        diff = Math.abs((diff - 1))
+                        if (object.left < 0) {
+                            object.left = left
+                            object.starttexture = diff
+                        }
+                        object.width += this.skipobjectdetectionrays
+                        object.endtexture = diff
+                        objecttodraw.push(object)
                     }
-                    object.width += 5
-                    object.endtexture = diff
-                    objecttodraw.push(object)
                 }
             }
         }
@@ -133,8 +123,9 @@ export class Scene {
 
     public renderframe(delta: number, map: Map, player: Player, fov: number) {
         
-        this.backgroundrenderer.render(this.ctx, player.facing.angle)
+        this.backgroundrenderer.render(this.ctx, player.facing.angle, this.settings.fov)
         let objectsinrange = this.filterobjectsinrange(player, map.sprites)
+        Sort.quickSort(objectsinrange, 0, objectsinrange.length - 1, (a,b) => a.distance > b.distance)
         let rays = player.getrays(this.settings.width, this.settings.fov)
         let drawfloor = (Math.floor(player.x) + Math.floor(player.y)) % 2 == 0
 
@@ -155,7 +146,7 @@ export class Scene {
                 drawfloorray = !drawfloorray
             }
 
-            if(r % 5 == 0) {
+            if(r % this.skipobjectdetectionrays == 0) {
                 this.getobjectstodraw(player, objectsinrange, rays[r].angle, r, walldistance)
             }
         }

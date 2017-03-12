@@ -1,7 +1,8 @@
 import {IPoint} from './ipoint';
-export class Colision {
+export class Colision implements IPoint {
     constructor(
-        public point: IPoint,
+        public x: number,
+        public y: number,
         public type: number
     ) {
     }

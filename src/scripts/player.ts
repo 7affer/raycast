@@ -6,22 +6,23 @@ import { Controls } from './controls';
 import { IPoint } from './ipoint';
 import { Angle } from './angle';
 
-export class Player {
+export class Player implements IPoint {
 
     private mixer: Mixer
+    private guncooldown = 0
 
     constructor(
-        public position: IPoint,
+        public x: number,
+        public y: number,
         public facing: Angle,
-        public fov: number,
         private loader: AssetLoader
     ) {
-        this.mixer = new Mixer(loader)
+        if (loader != null) this.mixer = new Mixer(loader)
     }
 
-    public getrays(columns: number) {
-        var step = this.fov / columns
-        var angle = this.facing.angle + this.fov / 2
+    public getrays(columns: number, fov: number) {
+        var step = fov / columns
+        var angle = this.facing.angle + fov / 2
         var rays = new Array<Angle>()
         for (let i = 0; i < columns; i++) {
             rays.push(new Angle(angle))
@@ -31,7 +32,11 @@ export class Player {
     }
 
     public shoot() {
-        this.mixer.playsound(0)
+        let time = (new Date()).getTime()
+        if (this.guncooldown < time) {
+            this.mixer.playsound(0)
+            this.guncooldown = time + 750
+        }
     }
 
     public rotateleft(delta: number, movement: number) {
@@ -42,53 +47,51 @@ export class Player {
         this.facing = new Angle(this.facing.angle - Math.PI * movement * delta / 1200)
     }
 
-    private correctposition(map: Map, position: IPoint): IPoint {
-        if (map.getvalue(Math.floor(position.x), Math.floor(this.position.y)) > 0) {
-            position.x = this.position.x
+    private correctposition(map: Map, newposition: IPoint) {
+        if (map.getvalue(Math.floor(newposition.x), Math.floor(this.y)) > 0) {
+            newposition.x = this.x
         }
-        if (map.getvalue(Math.floor(this.position.x), Math.floor(position.y)) > 0) {
-            position.y = this.position.y
+        if (map.getvalue(Math.floor(this.x), Math.floor(newposition.y)) > 0) {
+            newposition.y = this.y
         }
-        return position
+        this.x = newposition.x
+        this.y = newposition.y
     }
 
     public moveforward(delta: number, map: Map, run: boolean) {
         let position = {
-            x: this.position.x + this.facing.cos * delta / (run ? 250 : 500),
-            y: this.position.y + this.facing.sin * delta / (run ? 250 : 500)
+            x: this.x + this.facing.cos * delta / (run ? 250 : 500),
+            y: this.y + this.facing.sin * delta / (run ? 250 : 500)
         }
-        this.position = this.correctposition(map, position)
+        this.correctposition(map, position)
     }
 
     public movebackward(delta: number, map: Map) {
-        let position = {
-            x: this.position.x - this.facing.cos * delta / 500,
-            y: this.position.y - this.facing.sin * delta / 500
-        }
-        this.position = this.correctposition(map, position)
+        this.correctposition(map, {
+            x: this.x - this.facing.cos * delta / 500,
+            y: this.y - this.facing.sin * delta / 500
+        })
     }
 
     public strafeleft(delta: number, map: Map, run: boolean) {
         let newfacing = new Angle(this.facing.angle - PI0_5)
-        let position = {
-            x: this.position.x + newfacing.cos * delta / (run ? 250 : 500),
-            y: this.position.y + newfacing.sin * delta / (run ? 250 : 500)
-        }
-        this.position = this.correctposition(map, position)
+        this.correctposition(map, {
+            x: this.x + newfacing.cos * delta / (run ? 250 : 500),
+            y: this.y + newfacing.sin * delta / (run ? 250 : 500)
+        })
     }
 
     public straferight(delta: number, map: Map, run: boolean) {
         let newfacing = new Angle(this.facing.angle + PI0_5)
-        let position = {
-            x: this.position.x + newfacing.cos * delta / (run ? 250 : 500),
-            y: this.position.y + newfacing.sin * delta / (run ? 250 : 500)
-        }
-        this.position = this.correctposition(map, position)
+        this.correctposition(map, {
+            x: this.x + newfacing.cos * delta / (run ? 250 : 500),
+            y: this.y + newfacing.sin * delta / (run ? 250 : 500)
+        })
     }
 
     public initonmap(map: Map) {
-        while (map.getvalue(Math.floor(this.position.x), Math.floor(this.position.y)) > 0) {
-            this.position.x += 1
+        while (map.getvalue(Math.floor(this.x), Math.floor(this.y)) > 0) {
+            this.x += 1
         }
     }
 
@@ -101,7 +104,7 @@ export class Player {
         if (controls.mouserotateright) this.rotateright(delta, controls.mouserotateright)
         if (controls.strafeleft) this.strafeleft(delta, map, controls.run)
         if (controls.straferight) this.straferight(delta, map, controls.run)
-        if (controls.shoot) { 
+        if (controls.shoot) {
             this.shoot()
             controls.shoot = false
         }

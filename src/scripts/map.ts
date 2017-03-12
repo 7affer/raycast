@@ -1,12 +1,27 @@
+import { ISettings } from './isettings';
+import { AssetLoader } from './assetloader';
+import { ISprite } from "./sprites/isprite";
+import { SpritesFactory, SpriteType } from "./sprites/spritesfactory"
+
 export class Map {
     public map: Uint8Array
     public size: number
+    public sprites: Array<ISprite>
 
-    constructor(size: number, randparam: number) {
+    constructor(size: number, randparam: number, loader: AssetLoader, settings: ISettings) {
         this.map = new Uint8Array(size * size)
         this.size = size
-
         this.randomize(randparam)
+
+        let spritesfactory = new SpritesFactory(loader, size, settings)
+
+        this.sprites = new Array<ISprite>()
+        for (let i = 0; i < size * 10; i++) {
+            this.sprites.push(spritesfactory.createsprite(SpriteType.Static))
+        }
+        for (let i = 0; i < size * 30; i++) {
+            this.sprites.push(spritesfactory.createsprite(SpriteType.Zombie))
+        }
     }
 
     public setvalue(x: number, y: number, value: number) {
@@ -37,7 +52,7 @@ export class Map {
                     this.map[i] = 2
                 } else {
                     this.map[i] = 1
-                } 
+                }
             } else {
                 this.map[i] = 0
             }

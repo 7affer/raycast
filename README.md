@@ -21,6 +21,8 @@ https://pixabay.com/en/wall-brick-wall-texture-1733680/
 
 http://www.glitchthegame.com/public-domain-game-art/
 
+## Creative commons materials ![CC3 image](https://licensebuttons.net/l/by/3.0/88x31.png "CC3")
+
 Sounds (c) by Michel Baradari apollo-music.de
 Licensed under CC BY 3.0 http://creativecommons.org/licenses/by/3.0/
 

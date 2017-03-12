@@ -4,5 +4,6 @@ export interface ISettings {
     fov: number
     drawingdistance: number,
     floorcolor1: string,
-    floorcolor2: string
+    floorcolor2: string,
+    wallheight: number
 }

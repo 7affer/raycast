@@ -18,8 +18,7 @@ export class AssetLoader {
             './assets/walls/wall4c.jpg',
             './assets/walls/wall5c.jpg'
         ]
-        this.walls = new Array<HTMLImageElement>()
-        for (let item in this.wallssrcs) this.walls.push(new Image())
+        
 
         this.spritessrcs = [
             './assets/sprites/sprite1.png',
@@ -28,20 +27,27 @@ export class AssetLoader {
             './assets/sprites/sprite4.png',
             './assets/sprites/sprite5.png'
         ]
-        this.sprites = new Array<HTMLImageElement>()
-        for (let item in this.spritessrcs) this.sprites.push(new Image())
+
+        this.zspritessrcs = [
+            './assets/sprites/zombie1.png',
+            './assets/sprites/zombie2.png',
+            './assets/sprites/zombie3.png',
+            './assets/sprites/zombie4.png'
+        ]
 
         this.skylinesrcs = [
             './assets/sprites/skyline.jpg'
         ]
-        this.skyline = new Array<HTMLImageElement>()
-        for (let item in this.skylinesrcs) this.skyline.push(new Image())
 
         this.soundssrcs = [
             './assets/sounds/gun.mp3'
         ]
+
+        this.sprites = new Array<HTMLImageElement>()
+        this.zsprites = new Array<HTMLImageElement>()
+        this.walls = new Array<HTMLImageElement>()
+        this.skyline = new Array<HTMLImageElement>()
         this.sounds = new Array<HTMLAudioElement>()
-        for (let item in this.soundssrcs) this.sounds.push(new Audio())
     }
 
     private loaded = 0
@@ -49,59 +55,60 @@ export class AssetLoader {
     public walls: Array<HTMLImageElement>
     private spritessrcs: Array<string>
     public sprites: Array<HTMLImageElement>
+    private zspritessrcs: Array<string>
+    public zsprites: Array<HTMLImageElement>
     private skylinesrcs: Array<string>
     public skyline: Array<HTMLImageElement>
-    private soundssrcs: Array<string>
+    public soundssrcs: Array<string>
     public sounds: Array<HTMLAudioElement>
 
-    private isloaded() {
-        return this.loaded == this.toload()
+    private toload() {
+        return this.walls.length +
+            this.sprites.length +
+            this.zsprites.length +
+            this.skyline.length
     }
 
-    private toload() {
-        return this.walls.length + 
-            this.sprites.length + 
-            this.skyline.length +
-            this.sounds.length
+    private loadimages(
+        arrsrc: Array<string>,
+        arrobj: Array<HTMLImageElement>,
+        onprogress: (prog: number) => void,
+        callback: () => void
+    ) {
+        for (let i in arrsrc) {
+            arrobj.push(new Image())
+            arrobj[i].onload = () => {
+                onprogress(++this.loaded / this.toload())
+                if (this.loaded >= this.toload()) callback()
+            }
+            arrobj[i].src = arrsrc[i]
+        }
+    }
+
+    private loadaudio(
+        arrsrc: Array<string>,
+        arrobj: Array<HTMLAudioElement>,
+        onprogress: (prog: number) => void,
+        callback: () => void
+    ) {
+        for (let i in arrsrc) {
+            arrobj.push(new Audio())
+            arrobj[i].oncanplaythrough = () => {
+                //onprogress(++this.loaded / this.toload())
+                //if (this.loaded >= this.toload()) callback()
+            }
+            arrobj[i].src = arrsrc[i]
+        }
     }
 
     public loadall(
-        onprogress: (prog:number) => void,
+        onprogress: (prog: number) => void,
         callback: () => void
     ) {
-        for (let i in this.wallssrcs) {
-            this.walls[i].onload = () => {
-                this.loaded += 1
-                onprogress(this.loaded / this.toload())
-                if (this.isloaded()) callback()
-            }
-            this.walls[i].src = this.wallssrcs[i]
-        }
-
-        for (let i in this.spritessrcs) {
-            this.sprites[i].onload = () => {
-                this.loaded += 1
-                onprogress(this.loaded / this.toload())
-                if (this.isloaded()) callback()
-            }
-            this.sprites[i].src = this.spritessrcs[i]
-        }
-
-        for (let i in this.skylinesrcs) {
-            this.skyline[i].onload = () => {
-                this.loaded += 1
-                onprogress(this.loaded / this.toload())
-                if (this.isloaded()) callback()
-            }
-            this.skyline[i].src = this.skylinesrcs[i]
-        }
-        for (let i in this.soundssrcs) {
-            this.sounds[i].oncanplaythrough = () => {
-                this.loaded += 1
-                onprogress(this.loaded / this.toload())
-                if (this.isloaded()) callback()
-            }
-            this.sounds[i].src = this.soundssrcs[i]
-        }
+        this.loadimages(this.wallssrcs, this.walls, onprogress, callback)
+        this.loadimages(this.spritessrcs, this.sprites, onprogress, callback)
+        this.loadimages(this.zspritessrcs, this.zsprites, onprogress, callback)
+        this.loadimages(this.skylinesrcs, this.skyline, onprogress, callback)
+        this.loadaudio(this.soundssrcs, this.sounds, onprogress, callback)
     }
 }

@@ -18,7 +18,7 @@ export class Scene {
     private lastrender: number
     private height2: number
     private backgroundrenderer: BackgroundRenderer
-    private skipobjectdetectionrays: number = 4
+    private skipobjectdetectionrays: number = 5
 
     constructor(
         private ctx: CanvasRenderingContext2D,

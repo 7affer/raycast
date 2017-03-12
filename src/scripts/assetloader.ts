@@ -18,7 +18,7 @@ export class AssetLoader {
             './assets/walls/wall4c.jpg',
             './assets/walls/wall5c.jpg'
         ]
-        
+
 
         this.spritessrcs = [
             './assets/sprites/sprite1.png',
@@ -29,10 +29,46 @@ export class AssetLoader {
         ]
 
         this.zspritessrcs = [
-            './assets/sprites/zombie1.png',
-            './assets/sprites/zombie2.png',
-            './assets/sprites/zombie3.png',
-            './assets/sprites/zombie4.png'
+            './assets/sprites/femalezombiewalk/Walk (1).png',
+            './assets/sprites/femalezombiewalk/Walk (2).png',
+            './assets/sprites/femalezombiewalk/Walk (3).png',
+            './assets/sprites/femalezombiewalk/Walk (4).png',
+            './assets/sprites/femalezombiewalk/Walk (5).png',
+            './assets/sprites/femalezombiewalk/Walk (6).png',
+            './assets/sprites/femalezombiewalk/Walk (7).png',
+            './assets/sprites/femalezombiewalk/Walk (8).png',
+            './assets/sprites/femalezombiewalk/Walk (9).png',
+            './assets/sprites/femalezombiewalk/Walk (10).png',
+            './assets/sprites/femalezombiedead/Dead (1).png',
+            './assets/sprites/femalezombiedead/Dead (2).png',
+            './assets/sprites/femalezombiedead/Dead (3).png',
+            './assets/sprites/femalezombiedead/Dead (4).png',
+            './assets/sprites/femalezombiedead/Dead (5).png',
+            './assets/sprites/femalezombiedead/Dead (6).png',
+            './assets/sprites/femalezombiedead/Dead (7).png',
+            './assets/sprites/femalezombiedead/Dead (8).png',
+            './assets/sprites/femalezombiedead/Dead (9).png',
+            './assets/sprites/femalezombiedead/Dead (10).png',
+            './assets/sprites/malezombiewalk/Walk (1).png',
+            './assets/sprites/malezombiewalk/Walk (2).png',
+            './assets/sprites/malezombiewalk/Walk (3).png',
+            './assets/sprites/malezombiewalk/Walk (4).png',
+            './assets/sprites/malezombiewalk/Walk (5).png',
+            './assets/sprites/malezombiewalk/Walk (6).png',
+            './assets/sprites/malezombiewalk/Walk (7).png',
+            './assets/sprites/malezombiewalk/Walk (8).png',
+            './assets/sprites/malezombiewalk/Walk (9).png',
+            './assets/sprites/malezombiewalk/Walk (10).png',
+            './assets/sprites/malezombiedead/Dead (1).png',
+            './assets/sprites/malezombiedead/Dead (2).png',
+            './assets/sprites/malezombiedead/Dead (3).png',
+            './assets/sprites/malezombiedead/Dead (4).png',
+            './assets/sprites/malezombiedead/Dead (5).png',
+            './assets/sprites/malezombiedead/Dead (6).png',
+            './assets/sprites/malezombiedead/Dead (7).png',
+            './assets/sprites/malezombiedead/Dead (8).png',
+            './assets/sprites/malezombiedead/Dead (9).png',
+            './assets/sprites/malezombiedead/Dead (10).png',
         ]
 
         this.skylinesrcs = [

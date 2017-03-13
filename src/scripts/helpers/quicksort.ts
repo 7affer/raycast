@@ -3,9 +3,8 @@ import { IComparable } from "./icomparable";
 export class Sort {
 
     public static quickSort<T>(arr: Array<T>, left: number, right: number, compare: (a: T, b: T) => boolean) {
-        var len = arr.length,
-            pivot,
-            partitionIndex;
+        let pivot: number
+        let partitionIndex: number
 
         if (left < right) {
             pivot = right;

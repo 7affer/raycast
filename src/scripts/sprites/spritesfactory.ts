@@ -9,24 +9,25 @@ export { SpritesFactory, SpriteType }
 class SpritesFactory {
 
     public constructor(
-        private assetloader: AssetLoader,
+        private loader: AssetLoader,
         private mapsize: number,
         private settings: ISettings) {
 
     }
 
-    public createsprite(type: SpriteType) {
+    public createsprite(type: SpriteType): ISprite {
         switch (type) {
             case SpriteType.Static: return new Sprite(
                 Math.random() * this.mapsize,
                 Math.random() * this.mapsize,
-                this.assetloader.sprites[Math.floor(Math.random() * this.assetloader.sprites.length)],
+                this.loader.sprites[Math.floor(Math.random() * this.loader.sprites.length)],
                 this.settings
             )
             case SpriteType.Zombie: return new Zombie(
                 Math.random() * this.mapsize,
                 Math.random() * this.mapsize,
-                this.assetloader.zsprites[Math.floor(Math.random() * this.assetloader.zsprites.length)],
+                Math.floor(Math.random() * 2),
+                this.loader,
                 this.settings
             )
         }

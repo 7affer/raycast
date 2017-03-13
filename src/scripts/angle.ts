@@ -1,4 +1,4 @@
-import { PI2_0 } from './mathconst';
+import { PI2_0 } from './helpers/mathconst';
 
 export class Angle {
     public angle: number

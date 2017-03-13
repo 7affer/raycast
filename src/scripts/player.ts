@@ -1,6 +1,6 @@
 import { AssetLoader } from './assetloader';
 import { Mixer } from './sounds/mixer';
-import { PI0_5 } from './mathconst';
+import { PI0_5 } from './helpers/mathconst';
 import { Map } from './map';
 import { Controls } from './controls';
 import { IPoint } from './ipoint';

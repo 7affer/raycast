@@ -10,5 +10,6 @@ export interface ISprite extends IPoint {
     x: number
     y: number
 
-    render(ctx:CanvasRenderingContext2D):void
+    move(delta: number):void
+    render(ctx: CanvasRenderingContext2D): void
 }

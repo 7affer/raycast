@@ -1,8 +1,7 @@
-import {DistanceCalc} from './distancecalc';
-import { IManhattanDist } from './imanhattandist';
+import {DistanceCalc} from './helpers/distancecalc';
 import { IPoint } from './ipoint';
 import { Colision } from './colision';
-import { PI0_5, PI1_0, PI1_5 } from './mathconst'
+import { PI0_5, PI1_0, PI1_5 } from './helpers/mathconst'
 import { Angle } from './angle';
 import { Map } from './map';
 

@@ -25,6 +25,10 @@ export class Sprite implements ISprite {
         }
     }
 
+    public move(delta:number) {
+
+    }
+
     public render(ctx: CanvasRenderingContext2D) {
         let wallheight = Math.ceil(this.maxheight / this.distance)
         let bottom = Math.floor(this.height2 + wallheight / 2)

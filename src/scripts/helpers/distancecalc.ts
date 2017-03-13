@@ -1,4 +1,4 @@
-import { IPoint } from './ipoint';
+import { IPoint } from '../ipoint';
 export class DistanceCalc {
     public static distance(a: IPoint, b: IPoint) {
         return Math.sqrt(

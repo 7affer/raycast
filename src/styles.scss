@@ -13,9 +13,23 @@ body {
         }
     }
 
-    #gamecanvas {
-        display: inline-block;
-        background: #000;
+    .scene {
+
+        position: relative;
+        max-width: 1024px;
+
+        #gamecanvas {
+            display: inline-block;
+            background: #000;
+        }
+        
+        #hudcanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: inline-block;
+            background: transparent;
+        }
     }
 }
 

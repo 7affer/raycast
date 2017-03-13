@@ -25,13 +25,21 @@ export class Scene {
 
     constructor(
         private ctx: CanvasRenderingContext2D,
+        private ctxhud: CanvasRenderingContext2D,
         private settings: ISettings,
-        private assets: AssetLoader
+        private loader: AssetLoader
     ) {
         this.lastrender = Date.now()
-        this.backgroundrenderer = new BackgroundRenderer(assets, settings)
-        this.wallrenderer = new WallRenderer(assets, settings)
-        this.floorrenderer = new FloorRenderer(assets, settings)
+        this.backgroundrenderer = new BackgroundRenderer(loader, settings)
+        this.wallrenderer = new WallRenderer(loader, settings)
+        this.floorrenderer = new FloorRenderer(loader, settings)
+    }
+
+    private drawgun() {
+        let gunimage = this.loader.gun[0]
+        let left = Math.floor(this.settings.width * 0.60)
+        let top = Math.floor(this.settings.height * 0.60)
+        this.ctxhud.drawImage(gunimage, 0, 0, gunimage.width, gunimage.height, left, top, this.settings.width - left, this.settings.height - top)
     }
 
     private getobjectsinrange(player: Player, sprites: Array<ISprite>) {
@@ -110,5 +118,7 @@ export class Scene {
             object.width = 0
             object.move(delta)
         }
+
+        this.drawgun()
     }
 }

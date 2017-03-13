@@ -28,6 +28,10 @@ export class AssetLoader {
             './assets/sprites/sprite5.png'
         ]
 
+        this.gunsrcs = [
+            './assets/sprites/gun.png'
+        ]
+
         this.zspritessrcs = [
             './assets/sprites/femalezombiewalk/Walk (1).png',
             './assets/sprites/femalezombiewalk/Walk (2).png',
@@ -83,6 +87,7 @@ export class AssetLoader {
         this.zsprites = new Array<HTMLImageElement>()
         this.walls = new Array<HTMLImageElement>()
         this.skyline = new Array<HTMLImageElement>()
+        this.gun = new Array<HTMLImageElement>()
         this.sounds = new Array<HTMLAudioElement>()
     }
 
@@ -94,7 +99,9 @@ export class AssetLoader {
     private zspritessrcs: Array<string>
     public zsprites: Array<HTMLImageElement>
     private skylinesrcs: Array<string>
-    public skyline: Array<HTMLImageElement>
+    public skyline: Array<HTMLImageElement>    
+    private gunsrcs: Array<string>
+    public gun: Array<HTMLImageElement>
     public soundssrcs: Array<string>
     public sounds: Array<HTMLAudioElement>
 
@@ -102,7 +109,8 @@ export class AssetLoader {
         return this.walls.length +
             this.sprites.length +
             this.zsprites.length +
-            this.skyline.length
+            this.skyline.length + 
+            this.gun.length
     }
 
     private loadimages(
@@ -145,6 +153,7 @@ export class AssetLoader {
         this.loadimages(this.spritessrcs, this.sprites, onprogress, callback)
         this.loadimages(this.zspritessrcs, this.zsprites, onprogress, callback)
         this.loadimages(this.skylinesrcs, this.skyline, onprogress, callback)
+        this.loadimages(this.gunsrcs, this.gun, onprogress, callback)
         this.loadaudio(this.soundssrcs, this.sounds, onprogress, callback)
     }
 }

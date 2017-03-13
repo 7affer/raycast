@@ -26,17 +26,23 @@ assetloader.loadall(
     () => { 
         document.getElementById('loading-container').style.display = 'none'; 
         let canvas = <HTMLCanvasElement>document.getElementById('gamecanvas')
+        let hud = <HTMLCanvasElement>document.getElementById('hudcanvas')
         let ctx = canvas.getContext('2d')
+        let ctxhud = hud.getContext('2d')
         let map = new Map(150, 0.3, assetloader, gamesettins)
         let controls = new Controls()
         let player = new Player(map.size / 2 + 0.25, map.size / 2 + 0.25, new Angle(0), assetloader)
-        let scene = new Scene(ctx, gamesettins, assetloader)
+        let scene = new Scene(ctx, ctxhud, gamesettins, assetloader)
 
         canvas.width = gamesettins.width
         canvas.height = gamesettins.height
         canvas.style.width = `${gamesettins.width}px`
         canvas.style.height = `${gamesettins.height}px`
-        controls.bindevents(document, canvas)
+        hud.width = gamesettins.width
+        hud.height = gamesettins.height
+        hud.style.width = `${gamesettins.width}px`
+        hud.style.height = `${gamesettins.height}px`
+        controls.bindevents(document, hud)
         player.initonmap(map)
 
 

@@ -84,7 +84,7 @@ export class Controls {
 
     private mousemovefunction = (e: MouseEvent) => this.mousemove(e)
     private lockChangeAlert(doc: HTMLDocument, canvas: HTMLElement) {
-        let canvaselement = <HTMLCanvasElement>document.getElementById('gamecanvas')
+        let canvaselement = <HTMLCanvasElement>document.getElementById('hudcanvas')
         if (doc.pointerLockElement === canvaselement || (<any>document).mozPointerLockElement === canvas) {
             doc.addEventListener("mousemove", this.mousemovefunction, false)
         } else {

@@ -14,6 +14,8 @@ import { BackgroundRenderer } from "./renders/backgroundrenderer";
 import { Sort } from "./helpers/quicksort";
 import { WallRenderer } from "./renders/wallrenderer";
 import { FloorRenderer } from "./renders/floorrenderer";
+import { GunRenderer } from "./renders/gunrenderer";
+import { BloodRenderer } from "./renders/bloodrenderer";
 
 export class Scene {
 
@@ -21,25 +23,30 @@ export class Scene {
     private backgroundrenderer: BackgroundRenderer
     private wallrenderer: WallRenderer
     private floorrenderer: FloorRenderer
+    private gunrenderer: GunRenderer
+    private bloodrenderer: BloodRenderer
     private skipobjectdetectionrays: number = 5
 
     constructor(
         private ctx: CanvasRenderingContext2D,
         private ctxhud: CanvasRenderingContext2D,
         private settings: ISettings,
-        private loader: AssetLoader
+        private loader: AssetLoader,
+        private player: Player
     ) {
         this.lastrender = Date.now()
         this.backgroundrenderer = new BackgroundRenderer(loader, settings)
         this.wallrenderer = new WallRenderer(loader, settings)
         this.floorrenderer = new FloorRenderer(loader, settings)
+        this.gunrenderer = new GunRenderer(loader, settings)
+        this.bloodrenderer = new BloodRenderer(loader, settings)
+        this.player.gunrenderer = this.gunrenderer
     }
 
-    private drawgun() {
-        let gunimage = this.loader.gun[0]
-        let left = Math.floor(this.settings.width * 0.60)
-        let top = Math.floor(this.settings.height * 0.60)
-        this.ctxhud.drawImage(gunimage, 0, 0, gunimage.width, gunimage.height, left, top, this.settings.width - left, this.settings.height - top)
+    private drawhud() {
+        this.ctxhud.clearRect(0,0, this.settings.width, this.settings.height)
+        this.bloodrenderer.render(this.ctxhud)
+        this.gunrenderer.render(this.ctxhud)
     }
 
     private getobjectsinrange(player: Player, sprites: Array<ISprite>) {
@@ -61,44 +68,45 @@ export class Scene {
             if (anglediff < -Math.PI) anglediff += PI2_0
             if (anglediff > Math.PI) anglediff -= PI2_0
 
-            if (anglediff < this.settings.fov) {
-                object.distance = DistanceCalc.distance(player, object)
-                if (object.distance < this.settings.drawingdistance && object.distance < nearestwalldistance) {
-                    if (object.distance < 0.20) object.distance = 0.20
-                    let diff = anglediff / Math.atan2(object.anglewidth, object.distance)
-                    if (Math.abs(diff) <= 1) {
-                        diff = Math.abs((diff - 1))
-                        if (object.left < 0) {
-                            object.left = left
-                            object.starttexture = diff
-                        }
-                        object.width += this.skipobjectdetectionrays
-                        object.endtexture = diff
-                        objecttodraw.push(object)
+
+            object.distance = DistanceCalc.distance(player, object)
+            if (object.distance < this.settings.drawingdistance && object.distance < nearestwalldistance) {
+                if (object.distance < 0.20) object.distance = 0.20
+                let diff = anglediff / Math.atan2(object.anglewidth, object.distance)
+                if (Math.abs(diff) <= 0.5) {
+                    diff = Math.abs((diff - 0.5))
+                    if (object.left < 0) {
+                        object.left = left
+                        object.starttexture = diff
                     }
+                    object.width += this.skipobjectdetectionrays
+                    object.endtexture = diff
+                    objecttodraw.push(object)
+                    object.settarget(left, this.settings.width)
                 }
             }
+
         }
         return objecttodraw
     }
 
-    public renderframe(delta: number, map: Map, player: Player, fov: number) {
+    public renderframe(delta: number, map: Map, fov: number) {
 
-        this.backgroundrenderer.render(this.ctx, player.facing.angle, this.settings.fov)
-        let objectsinrange = this.getobjectsinrange(player, map.sprites)
+        this.backgroundrenderer.render(this.ctx, this.player.facing.angle, this.settings.fov)
+        let objectsinrange = this.getobjectsinrange(this.player, map.sprites)
         Sort.quickSort(objectsinrange, 0, objectsinrange.length - 1, (a, b) => a.distance > b.distance)
-        let rays = player.getrays(this.settings.width, this.settings.fov)
-        let drawfloor = (Math.floor(player.x) + Math.floor(player.y)) % 2 == 0
+        let rays = this.player.getrays(this.settings.width, this.settings.fov)
+        let drawfloor = (Math.floor(this.player.x) + Math.floor(this.player.y)) % 2 == 0
 
         for (let r = 0; r < rays.length; r++) {
             let bottom = this.settings.height
             let drawfloorray = drawfloor
             let walldistance: number
-            let cos = Math.cos(player.facing.angle - rays[r].angle)
-            let colisions = Ray.cast(map, player, null, null, rays[r], this.settings.drawingdistance)
+            let cos = Math.cos(this.player.facing.angle - rays[r].angle)
+            let colisions = Ray.cast(map, this.player, null, null, rays[r], this.settings.drawingdistance)
 
             for (let colision of colisions) {
-                let distance = DistanceCalc.distance(player, colision) * cos
+                let distance = DistanceCalc.distance(this.player, colision) * cos
                 if (colision.type > 0) {
                     walldistance = distance
                     this.wallrenderer.render(this.ctx, r, distance, colision)
@@ -108,17 +116,20 @@ export class Scene {
             }
 
             if (r % this.skipobjectdetectionrays == 0) {
-                this.getobjectstodraw(player, objectsinrange, rays[r].angle, r, walldistance)
+                this.getobjectstodraw(this.player, objectsinrange, rays[r].angle, r, walldistance)
             }
         }
 
         for (let object of objectsinrange) {
             if (object.left >= 0) object.render(this.ctx)
+            object.ifshoot(this.player.fired, () => this.bloodrenderer.splash())
+            object.targeted = false
             object.left = -1
-            object.width = 0
+            object.width = 0            
             object.move(delta)
         }
+        this.player.fired = false
 
-        this.drawgun()
+        this.drawhud()
     }
 }

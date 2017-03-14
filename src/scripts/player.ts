@@ -5,11 +5,14 @@ import { Map } from './map';
 import { Controls } from './controls';
 import { IPoint } from './ipoint';
 import { Angle } from './angle';
+import { GunRenderer } from "./renders/gunrenderer";
 
 export class Player implements IPoint {
 
     private mixer: Mixer
     private guncooldown = 0
+    public fired: boolean = false
+    public gunrenderer: GunRenderer
 
     constructor(
         public x: number,
@@ -34,8 +37,10 @@ export class Player implements IPoint {
     public shoot() {
         let time = (new Date()).getTime()
         if (this.guncooldown < time) {
+            this.fired = true
             this.mixer.playsound(0)
             this.guncooldown = time + 750
+            this.gunrenderer.shoot()
         }
     }
 

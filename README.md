@@ -1,5 +1,5 @@
 # Raycast
-Raycast engine prototype
+Raycasting engine prototype
 
 ## Demo
 https://7affer.github.io/raycast/
@@ -20,6 +20,8 @@ https://pixabay.com/en/lake-mcdonald-landscape-mountains-1116252/
 https://pixabay.com/en/wall-brick-wall-texture-1733680/
 
 http://www.glitchthegame.com/public-domain-game-art/
+
+http://www.gameart2d.com/freebies.html
 
 ## Creative commons materials ![CC3 image](https://licensebuttons.net/l/by/3.0/88x31.png "CC3")
 

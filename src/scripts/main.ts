@@ -32,7 +32,7 @@ assetloader.loadall(
         let map = new Map(150, 0.3, assetloader, gamesettins)
         let controls = new Controls()
         let player = new Player(map.size / 2 + 0.25, map.size / 2 + 0.25, new Angle(0), assetloader)
-        let scene = new Scene(ctx, ctxhud, gamesettins, assetloader)
+        let scene = new Scene(ctx, ctxhud, gamesettins, assetloader, player)
 
         canvas.width = gamesettins.width
         canvas.height = gamesettins.height
@@ -52,7 +52,7 @@ assetloader.loadall(
             let delta = now - lastrender
             lastrender = now
             player.getcontrols(controls, map, delta)
-            scene.renderframe(delta, map, player, gamesettins.fov)
+            scene.renderframe(delta, map, gamesettins.fov)
             requestAnimationFrame(render)
             fps.innerText = (Math.floor(1000 / delta)).toString()
         }

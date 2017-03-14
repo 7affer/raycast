@@ -29,7 +29,21 @@ export class AssetLoader {
         ]
 
         this.gunsrcs = [
-            './assets/sprites/gun.png'
+            './assets/sprites/gun/gun.png',
+            './assets/sprites/gun/shoot1.png',
+            './assets/sprites/gun/shoot2.png',
+            './assets/sprites/gun/shoot3.png',
+            './assets/sprites/gun/shoot4.png',
+            './assets/sprites/gun/reload1.png',
+            './assets/sprites/gun/reload2.png',
+            './assets/sprites/gun/reload3.png',
+            './assets/sprites/gun/reload4.png'
+        ]
+
+        this.bloodsrcs = [
+            './assets/sprites/blood/blood1.png',
+            './assets/sprites/blood/blood2.png',
+            './assets/sprites/blood/blood3.png'
         ]
 
         this.zspritessrcs = [
@@ -88,6 +102,7 @@ export class AssetLoader {
         this.walls = new Array<HTMLImageElement>()
         this.skyline = new Array<HTMLImageElement>()
         this.gun = new Array<HTMLImageElement>()
+        this.blood = new Array<HTMLImageElement>()
         this.sounds = new Array<HTMLAudioElement>()
     }
 
@@ -99,9 +114,11 @@ export class AssetLoader {
     private zspritessrcs: Array<string>
     public zsprites: Array<HTMLImageElement>
     private skylinesrcs: Array<string>
-    public skyline: Array<HTMLImageElement>    
+    public skyline: Array<HTMLImageElement>
     private gunsrcs: Array<string>
     public gun: Array<HTMLImageElement>
+    private bloodsrcs: Array<string>
+    public blood: Array<HTMLImageElement>
     public soundssrcs: Array<string>
     public sounds: Array<HTMLAudioElement>
 
@@ -109,8 +126,9 @@ export class AssetLoader {
         return this.walls.length +
             this.sprites.length +
             this.zsprites.length +
-            this.skyline.length + 
-            this.gun.length
+            this.skyline.length +
+            this.bloodsrcs.length +
+            this.gunsrcs.length
     }
 
     private loadimages(
@@ -154,6 +172,7 @@ export class AssetLoader {
         this.loadimages(this.zspritessrcs, this.zsprites, onprogress, callback)
         this.loadimages(this.skylinesrcs, this.skyline, onprogress, callback)
         this.loadimages(this.gunsrcs, this.gun, onprogress, callback)
+        this.loadimages(this.bloodsrcs, this.blood, onprogress, callback)
         this.loadaudio(this.soundssrcs, this.sounds, onprogress, callback)
     }
 }

@@ -22,6 +22,7 @@ export class Zombie implements ISprite {
     private lastvectorchangetick: number = 0
     private vectorchangelength: number = 3000
     private vector: IPoint
+    public targeted: boolean = false
 
 
     constructor(
@@ -75,6 +76,24 @@ export class Zombie implements ISprite {
             this.x += this.vector.x * (delta / 5000)
             this.y += this.vector.y * (delta / 5000)
             this.setvector()
+        }
+    }
+
+    public settarget(left: number, width: number) {
+        if (width * 0.45 < left &&
+            width * 0.55 > left &&
+            this.distance < 5) {
+            this.targeted = true
+        }
+    }
+
+    public ifshoot(fired: boolean, onshoot: () => void) {
+        if (fired && this.targeted && !this.dead) {
+            this.dead = true
+            this.frame = 0
+            if(this.distance < 2) {
+                onshoot()
+            }
         }
     }
 

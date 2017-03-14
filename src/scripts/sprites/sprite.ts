@@ -10,6 +10,7 @@ export class Sprite implements ISprite {
     public starttexture: number
     public endtexture: number
     public distance: number
+    public targeted: boolean = false
     private height2: number
     private maxheight: number
 
@@ -27,6 +28,14 @@ export class Sprite implements ISprite {
 
     public move(delta:number) {
 
+    }
+
+    public settarget(left: number, width: number) {
+        
+    }
+
+    public ifshoot(fired: boolean, onshoot: () => void) {
+        
     }
 
     public render(ctx: CanvasRenderingContext2D) {

@@ -9,7 +9,10 @@ export interface ISprite extends IPoint {
     distance: number
     x: number
     y: number
+    targeted: boolean
 
     move(delta: number):void
     render(ctx: CanvasRenderingContext2D): void
+    settarget(left: number, width: number): void
+    ifshoot(fired: boolean, onshoot: () => void): void
 }
